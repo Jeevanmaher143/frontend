@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./About.css";
 
-const API = process.env.REACT_APP_API_URL;
+//const API = process.env.REACT_APP_API_URL;
+
+const API =
+  process.env.REACT_APP_API_URL ||
+  "https://backend-9i6n.onrender.com";
+
 
 const About = () => {
   const [village, setVillage] = useState(null);

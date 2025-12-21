@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./Gallery.css";
 
+// const API =
+//   process.env.REACT_APP_API_URL ||
+//   "https://backend-9i6n.onrender.com";
+
 const Gallery = () => {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/gallery`)
+    fetch(`${process.env.REACT_APP_API_URL || "https://backend-9i6n.onrender.com" }/api/gallery`)
       .then((res) => res.json())
       .then(setImages)
       .catch(console.error);

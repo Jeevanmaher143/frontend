@@ -5,8 +5,8 @@ import { AuthContext } from "../context/AuthContext";
 import "./Login.css";
 
 // ✅ SAFE API URL (production + local)
-const API =
-  process.env.REACT_APP_API_URL || "http://localhost:5000";
+const API ="https://backend-9i6n.onrender.com";
+//  process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);

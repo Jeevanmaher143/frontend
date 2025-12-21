@@ -4,6 +4,11 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./UserProfile.css";
 
+/* ✅ BACKEND URL (LOCAL + DEPLOY SAFE) */
+const API =
+  process.env.REACT_APP_API_URL ||
+  "https://backend-9i6n.onrender.com";
+
 const UserProfile = () => {
   const { token, logout } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -14,11 +19,20 @@ const UserProfile = () => {
   const fetchProfile = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/user/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+
+      const res = await axios.get(
+        `${API}/api/user/profile`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       setProfile(res.data);
     } catch (err) {
+      console.error("Profile fetch error:", err);
+
       if (err.response?.status === 401) {
         logout();
         navigate("/login");
@@ -29,10 +43,16 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
-    if (token) fetchProfile();
+    if (token) {
+      fetchProfile();
+    }
   }, [token]);
 
-  if (loading) return <p className="loading-text">Loading profile...</p>;
+  /* ================= LOADING ================= */
+  if (loading) {
+    return <p className="loading-text">Loading profile...</p>;
+  }
+
   if (!profile) return null;
 
   const { user, services } = profile;
@@ -43,22 +63,15 @@ const UserProfile = () => {
 
       {/* USER INFO */}
       <div className="profile-card">
-        <p>
-          <b>Name:</b> {user.fullName}
-        </p>
-        <p>
-          <b>Email:</b> {user.email || "N/A"}
-        </p>
-        <p>
-          <b>Mobile:</b> {user.mobile || "N/A"}
-        </p>
-        <p>
-          <b>Village:</b> {user.village || "N/A"}
-          
-        </p>
+        <p><b>Name:</b> {user.fullName}</p>
+        <p><b>Email:</b> {user.email || "N/A"}</p>
+        <p><b>Mobile:</b> {user.mobile || "N/A"}</p>
+        <p><b>Village:</b> {user.village || "N/A"}</p>
+
         {user.createdAt && (
           <p>
-            <b>Joined:</b> {new Date(user.createdAt).toLocaleDateString()}
+            <b>Joined:</b>{" "}
+            {new Date(user.createdAt).toLocaleDateString()}
           </p>
         )}
 
@@ -82,9 +95,8 @@ const UserProfile = () => {
         <div className="applications-list">
           {services.map((s) => (
             <div key={s._id} className="application-card">
-              <p>
-                <b>Service:</b> {s.serviceType}
-              </p>
+              <p><b>Service:</b> {s.serviceType}</p>
+
               <p>
                 <b>Status:</b>{" "}
                 <span className={`status ${s.status.toLowerCase()}`}>
@@ -99,11 +111,6 @@ const UserProfile = () => {
                 </p>
               )}
 
-              {/* {s.status === "Rejected" && (
-                <p className="reject-reason">
-                  <b>Reason:</b> {s.adminRemark}
-                </p>
-              )} */}
               {s.status === "Rejected" && s.adminRemark && (
                 <p className="reject-reason">
                   <b>Reason:</b> {s.adminRemark}
