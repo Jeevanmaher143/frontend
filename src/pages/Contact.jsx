@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./Contact.css";
 
-const API = process.env.REACT_APP_API_URL; // backend URL
+//const API = process.env.REACT_APP_API_URL;
+const API ="https://backend-9i6n.onrender.com";
+
 
 const Contact = () => {
   const [members, setMembers] = useState([]);
@@ -11,11 +13,20 @@ const Contact = () => {
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const res = await fetch(`${API}/api/contacts`);
-        if (!res.ok) throw new Error("Failed to fetch contacts");
+        if (!API) {
+          throw new Error("API URL not configured");
+        }
 
-        const data = await res.json();
-        setMembers(data);
+        const res = await fetch(`${API}/api/contacts`);
+        const text = await res.text();
+
+        // 🛑 Backend must return JSON, not HTML
+        if (text.startsWith("<")) {
+          throw new Error("HTML response received instead of JSON");
+        }
+
+        const data = JSON.parse(text);
+        setMembers(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Contact fetch error:", err);
         setError("Unable to load contacts");
@@ -25,7 +36,7 @@ const Contact = () => {
     };
 
     fetchContacts();
-  }, [API]);
+  }, []);
 
   /* ================= LOADING ================= */
   if (loading) {
@@ -57,12 +68,11 @@ const Contact = () => {
 
       <div className="contact-grid">
         {members.map((m) => {
-          /* ✅ CLOUDINARY + LOCAL IMAGE SUPPORT */
           const imageSrc =
-            m.photo && m.photo.startsWith("http")
-              ? m.photo // Cloudinary
+            m.photo?.startsWith("http")
+              ? m.photo
               : m.photo
-              ? `${API}${m.photo}` // Local uploads
+              ? `${API}${m.photo}`
               : "https://via.placeholder.com/200?text=No+Image";
 
           return (
@@ -71,8 +81,8 @@ const Contact = () => {
                 src={imageSrc}
                 alt={m.name}
                 className="contact-img"
-                loading="lazy"               // ✅ mobile safe
-                decoding="async"             // ✅ faster rendering
+                loading="lazy"
+                decoding="async"
                 onError={(e) => {
                   e.target.src =
                     "https://via.placeholder.com/200?text=No+Image";
