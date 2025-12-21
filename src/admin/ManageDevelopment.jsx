@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./ManageDevelopment.css";
 
+const API_URL = process.env.REACT_APP_API_URL; // ✅ IMPORTANT
+
 const ManageDevelopment = () => {
   const [projects, setProjects] = useState([]);
   const [images, setImages] = useState([]);
@@ -16,14 +18,14 @@ const ManageDevelopment = () => {
 
   const token = localStorage.getItem("token");
 
-  // FETCH PROJECTS
+  // ================= FETCH PROJECTS =================
   useEffect(() => {
     fetchProjects();
   }, []);
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/development");
+      const res = await fetch(`${API_URL}/api/development`);
       const data = await res.json();
       setProjects(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -31,12 +33,12 @@ const ManageDevelopment = () => {
     }
   };
 
-  // HANDLE INPUT CHANGE
+  // ================= INPUT CHANGE =================
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ADD / UPDATE PROJECT
+  // ================= ADD / UPDATE =================
   const submitProject = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -44,7 +46,7 @@ const ManageDevelopment = () => {
     try {
       if (editingId) {
         // UPDATE PROJECT
-        await fetch(`http://localhost:5000/api/development/${editingId}`, {
+        await fetch(`${API_URL}/api/development/${editingId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -67,7 +69,7 @@ const ManageDevelopment = () => {
           formData.append("images", images[i]);
         }
 
-        await fetch("http://localhost:5000/api/development", {
+        await fetch(`${API_URL}/api/development`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -86,7 +88,7 @@ const ManageDevelopment = () => {
     }
   };
 
-  // START EDIT
+  // ================= EDIT =================
   const startEdit = (project) => {
     setEditingId(project._id);
     setForm({
@@ -99,9 +101,9 @@ const ManageDevelopment = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // MARK COMPLETED
+  // ================= MARK COMPLETED =================
   const markCompleted = async (id) => {
-    await fetch(`http://localhost:5000/api/development/${id}`, {
+    await fetch(`${API_URL}/api/development/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -113,7 +115,7 @@ const ManageDevelopment = () => {
     fetchProjects();
   };
 
-  // RESET FORM
+  // ================= RESET =================
   const resetForm = () => {
     setEditingId(null);
     setForm({
@@ -175,13 +177,7 @@ const ManageDevelopment = () => {
 
         <div className="form-actions">
           <button type="submit" disabled={loading}>
-            {loading ? (
-              <span className="btn-loader"></span>
-            ) : editingId ? (
-              "Update Project"
-            ) : (
-              "Add Project"
-            )}
+            {loading ? <span className="btn-loader"></span> : editingId ? "Update Project" : "Add Project"}
           </button>
 
           {editingId && (
@@ -202,30 +198,19 @@ const ManageDevelopment = () => {
         {projects.map((p) => (
           <div className="dev-card" key={p._id}>
             <h4>{p.projectName}</h4>
-
             <p>{p.description}</p>
 
             <div className="progress-bar">
-              <div
-                className="progress-fill"
-                style={{ width: `${p.progress}%` }}
-              ></div>
+              <div className="progress-fill" style={{ width: `${p.progress}%` }}></div>
             </div>
 
-            <p>
-              <b>Progress:</b> {p.progress}%
-            </p>
-            <p>
-              <b>Funds Used:</b> ₹{p.fundsUsed || "N/A"}
-            </p>
+            <p><b>Progress:</b> {p.progress}%</p>
+            <p><b>Funds Used:</b> ₹{p.fundsUsed || "N/A"}</p>
 
             {p.status !== "Completed" ? (
               <div className="card-actions">
-                <button onClick={() => startEdit(p)}>Update Project</button>
-                <button
-                  className="complete-btn"
-                  onClick={() => markCompleted(p._id)}
-                >
+                <button onClick={() => startEdit(p)}>Update</button>
+                <button className="complete-btn" onClick={() => markCompleted(p._id)}>
                   Mark Completed
                 </button>
               </div>
