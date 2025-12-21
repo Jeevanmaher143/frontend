@@ -4,6 +4,8 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import "./Login.css";
 
+const API = process.env.REACT_APP_API_URL;
+
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
 
@@ -32,7 +34,7 @@ const Auth = () => {
       if (isLogin) {
         // 🔐 LOGIN
         const res = await axios.post(
-          "http://localhost:5000/api/auth/login",
+          `${API}/api/auth/login`,
           { email, password }
         );
 
@@ -44,17 +46,14 @@ const Auth = () => {
           navigate("/profile");
         }
       } else {
-        // 📝 REGISTER (ALL REQUIRED FIELDS)
-        await axios.post(
-          "http://localhost:5000/api/auth/register",
-          {
-            fullName,
-            email,
-            password,
-            mobile,
-            village
-          }
-        );
+        // 📝 REGISTER
+        await axios.post(`${API}/api/auth/register`, {
+          fullName,
+          email,
+          password,
+          mobile,
+          village,
+        });
 
         alert("Registration successful! Please login.");
 
@@ -69,7 +68,7 @@ const Auth = () => {
     } catch (err) {
       alert(
         err.response?.data?.message ||
-        `${isLogin ? "Login" : "Registration"} failed`
+          `${isLogin ? "Login" : "Registration"} failed`
       );
     }
   };
@@ -89,17 +88,19 @@ const Auth = () => {
       <div className="auth-box">
         <div className="auth-header">
           <h1>{isLogin ? "Welcome Back" : "Create Account"}</h1>
-          <p>{isLogin ? "Please login to continue" : "Sign up to get started"}</p>
+          <p>
+            {isLogin
+              ? "Please login to continue"
+              : "Sign up to get started"}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* FULL NAME */}
           {!isLogin && (
             <div className="input-group">
               <label>Full Name</label>
               <input
                 type="text"
-                placeholder="Enter your full name"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required
@@ -107,65 +108,55 @@ const Auth = () => {
             </div>
           )}
 
-          {/* EMAIL */}
           <div className="input-group">
             <label>Email</label>
             <input
               type="email"
-              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
-          {/* MOBILE */}
           {!isLogin && (
-            <div className="input-group">
-              <label>Mobile Number</label>
-              <input
-                type="text"
-                placeholder="Enter mobile number"
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                required
-              />
-            </div>
+            <>
+              <div className="input-group">
+                <label>Mobile</label>
+                <input
+                  type="text"
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="input-group">
+                <label>Village</label>
+                <input
+                  type="text"
+                  value={village}
+                  onChange={(e) => setVillage(e.target.value)}
+                  required
+                />
+              </div>
+            </>
           )}
 
-          {/* VILLAGE */}
-          {!isLogin && (
-            <div className="input-group">
-              <label>Village</label>
-              <input
-                type="text"
-                placeholder="Enter village name"
-                value={village}
-                onChange={(e) => setVillage(e.target.value)}
-                required
-              />
-            </div>
-          )}
-
-          {/* PASSWORD */}
           <div className="input-group">
             <label>Password</label>
             <input
               type="password"
-              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
 
-          {/* CONFIRM PASSWORD */}
           {!isLogin && (
             <div className="input-group">
               <label>Confirm Password</label>
               <input
                 type="password"
-                placeholder="Confirm your password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
@@ -181,7 +172,7 @@ const Auth = () => {
         <div className="auth-footer">
           <p>
             {isLogin ? "Don't have an account?" : "Already have an account?"}
-            <span onClick={toggleMode} className="toggle-link">
+            <span className="toggle-link" onClick={toggleMode}>
               {isLogin ? " Sign Up" : " Login"}
             </span>
           </p>
