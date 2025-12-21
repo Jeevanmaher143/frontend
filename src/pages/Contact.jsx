@@ -1,28 +1,33 @@
 import React, { useEffect, useState } from "react";
 import "./Contact.css";
 
+const API = process.env.REACT_APP_API_URL; // backend URL
+
 const Contact = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/contacts")
-      .then((res) => {
+    const fetchContacts = async () => {
+      try {
+        const res = await fetch(`${API}/api/contacts`);
         if (!res.ok) throw new Error("Failed to fetch contacts");
-        return res.json();
-      })
-      .then((data) => {
-        setMembers(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch contacts", err);
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
 
+        const data = await res.json();
+        setMembers(data);
+      } catch (err) {
+        console.error("Contact fetch error:", err);
+        setError("Unable to load contacts");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContacts();
+  }, [API]);
+
+  /* ================= LOADING ================= */
   if (loading) {
     return (
       <div className="contact-page">
@@ -34,12 +39,11 @@ const Contact = () => {
     );
   }
 
+  /* ================= ERROR ================= */
   if (error) {
     return (
       <div className="contact-page">
-        <div className="error-container">
-          <p className="error-message">⚠️ {error}</p>
-        </div>
+        <p className="error-message">⚠️ {error}</p>
       </div>
     );
   }
@@ -47,56 +51,55 @@ const Contact = () => {
   return (
     <div className="contact-page">
       <div className="contact-header">
-        <h1 className="contact-title">Gram Panchayat Contact Directory</h1>
-        <p className="contact-subtitle">
-          Connect with our dedicated team members
-        </p>
+        <h1>Gram Panchayat Contact Directory</h1>
+        <p>Connect with our dedicated team members</p>
       </div>
 
       <div className="contact-grid">
-        {members.map((m) => (
-          <div className="contact-card" key={m._id}>
-            <div className="card-image-wrapper">
+        {members.map((m) => {
+          /* ✅ CLOUDINARY + LOCAL IMAGE SUPPORT */
+          const imageSrc =
+            m.photo && m.photo.startsWith("http")
+              ? m.photo // Cloudinary
+              : m.photo
+              ? `${API}${m.photo}` // Local uploads
+              : "https://via.placeholder.com/200?text=No+Image";
+
+          return (
+            <div className="contact-card" key={m._id}>
               <img
-                // src={`http://localhost:5000${m.photo}`}
-                // alt={m.name}
-                src={m.photo}
-                alt={m.name}  // in this use CLoud to store 
+                src={imageSrc}
+                alt={m.name}
                 className="contact-img"
-                style={{ display: "block", margin: "0 auto" }} // Ensures horizontal centering
+                loading="lazy"               // ✅ mobile safe
+                decoding="async"             // ✅ faster rendering
                 onError={(e) => {
                   e.target.src =
                     "https://via.placeholder.com/200?text=No+Image";
                 }}
               />
-            </div>
 
-            <div className="card-content">
-              <h3 className="contact-name">{m.name}</h3>
-              <p className="contact-role">{m.role}</p>
+              <h3>{m.name}</h3>
+              <p className="role">{m.role}</p>
 
-              <div className="contact-details">
-                <a href={`tel:${m.phone}`} className="contact-info phone">
-                  <span className="icon">📞</span>
-                  <span className="text">{m.phone}</span>
+              {m.phone && (
+                <a href={`tel:${m.phone}`} className="phone">
+                  📞 {m.phone}
                 </a>
+              )}
 
-                {m.email && (
-                  <a href={`mailto:${m.email}`} className="contact-info email">
-                    <span className="icon">✉️</span>
-                    <span className="text">{m.email}</span>
-                  </a>
-                )}
-              </div>
+              {m.email && (
+                <a href={`mailto:${m.email}`} className="email">
+                  ✉️ {m.email}
+                </a>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {members.length === 0 && (
-        <div className="empty-state">
-          <p>No contacts available at the moment.</p>
-        </div>
+        <p className="empty-state">No contacts available</p>
       )}
     </div>
   );
