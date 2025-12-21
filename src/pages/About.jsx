@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from "react";
 import "./About.css";
 
+const API = process.env.REACT_APP_API_URL;
+
 const About = () => {
   const [village, setVillage] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/village")
+    fetch(`${API}/api/village`)
       .then((res) => res.json())
-      .then((data) => setVillage(data));
+      .then((data) => setVillage(data))
+      .catch((err) => {
+        console.error("Failed to fetch village data", err);
+      });
   }, []);
 
-  if (!village) return <p className="loading">Loading village information...</p>;
+  if (!village) {
+    return <p className="loading">Loading village information...</p>;
+  }
 
   return (
     <div className="about-page">
       {/* HEADER */}
       <div className="about-header">
-        <h1> Welcome to {village.name} </h1>
+        <h1>Welcome to {village.name}</h1>
         <p className="slogan">
           “Clean Village • Strong Community • Bright Future”
         </p>
@@ -66,7 +73,7 @@ const About = () => {
         </div>
       )}
 
-      {/* STATIC VISION SECTION */}
+      {/* VISION */}
       <div className="about-section vision">
         <h2>🎯 Our Vision</h2>
         <ul>
