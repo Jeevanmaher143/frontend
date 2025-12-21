@@ -92,6 +92,7 @@ const AppRoutes = () => {
         <Route path="development" element={<ManageDevelopment />} />
         <Route path="contact" element={<ManageContacts />} />
         <Route path="about" element={<ManageAbout />} />
+        
       </Route>
     </Routes>
   );
