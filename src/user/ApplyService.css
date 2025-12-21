@@ -447,3 +447,75 @@ html {
     border: 1px solid #ddd;
   }
 }
+.btn-loader {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  border-top: 3px solid #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+/* ===== CENTER POPUP ===== */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.popup {
+  background: #ffffff;
+  padding: 28px 36px;
+  border-radius: 14px;
+  min-width: 280px;
+  max-width: 90%;
+  text-align: center;
+  animation: popupScale 0.25s ease;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.popup.success {
+  border-top: 6px solid #10b981;
+}
+
+.popup.error {
+  border-top: 6px solid #ef4444;
+}
+
+.popup-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.popup-message {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+@keyframes popupScale {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+

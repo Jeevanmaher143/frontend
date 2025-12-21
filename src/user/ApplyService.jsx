@@ -4,7 +4,11 @@ import { AuthContext } from "../context/AuthContext";
 import { useLocation } from "react-router-dom";
 import "./ApplyService.css";
 
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+const API =
+  process.env.REACT_APP_API_URL ||
+  "https://backend-9i6n.onrender.com";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const ApplyService = () => {
   const { token } = useContext(AuthContext);
@@ -19,67 +23,85 @@ const ApplyService = () => {
     address: "",
     mobile: "",
     deceasedName: "",
-    dateOfDeath: ""
+    dateOfDeath: "",
   });
 
   const [files, setFiles] = useState({});
-  const [toast, setToast] = useState({ show: false, message: "", type: "" });
+  const [loading, setLoading] = useState(false);
 
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "",
+  });
+
+  /* ================= PREFILL SERVICE ================= */
   useEffect(() => {
     if (selectedService) {
-      setFormData((prev) => ({ ...prev, serviceType: selectedService }));
+      setFormData((prev) => ({
+        ...prev,
+        serviceType: selectedService,
+      }));
     }
   }, [selectedService]);
 
+  /* ================= TOAST ================= */
   const showToast = (message, type) => {
     setToast({ show: true, message, type });
     setTimeout(() => {
       setToast({ show: false, message: "", type: "" });
-    }, 3000);
+    }, 2000);
   };
 
+  /* ================= INPUT ================= */
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  /* ================= FILE ================= */
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+
     if (file && file.size > MAX_FILE_SIZE) {
-      showToast("File size must be less than 2MB", "error");
+      showToast("File size must be less than 5MB", "error");
       e.target.value = "";
       return;
     }
+
     setFiles({ ...files, [e.target.name]: file });
   };
 
+  /* ================= SUBMIT ================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const data = new FormData();
 
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
+    Object.entries(formData).forEach(([key, value]) =>
+      data.append(key, value)
+    );
 
-    Object.keys(files).forEach((key) => {
-      data.append(key, files[key]);
-    });
+    Object.entries(files).forEach(([key, file]) =>
+      data.append(key, file)
+    );
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/services/apply",
+        `${API}/api/services/apply`,
         data,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data"
-          }
+          },
         }
       );
 
-      showToast(res.data.message || "Application submitted successfully! ✅", "success");
-      
-      // Reset form after successful submission
+      showToast(
+        res.data.message || "Application submitted successfully ✅",
+        "success"
+      );
+
       setTimeout(() => {
         setFormData({
           serviceType: selectedService || "",
@@ -87,12 +109,18 @@ const ApplyService = () => {
           address: "",
           mobile: "",
           deceasedName: "",
-          dateOfDeath: ""
+          dateOfDeath: "",
         });
         setFiles({});
       }, 1500);
     } catch (err) {
-      showToast(err.response?.data?.message || "Submission failed! ❌", "error");
+      console.error("Apply service error:", err);
+      showToast(
+        err.response?.data?.message || "Submission failed ❌",
+        "error"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -100,19 +128,14 @@ const ApplyService = () => {
     <div className="apply-service-container">
       <h2>Apply for Service</h2>
 
-      {/* TOAST MESSAGE */}
+      {/* TOAST */}
       {toast.show && (
-        <div className={`toast-overlay ${toast.show ? 'show' : ''}`}>
-          <div className={`toast ${toast.type}`}>
-            <div className="toast-icon">
-              {toast.type === "success" ? "✅" : "❌"}
-            </div>
-            <div className="toast-message">{toast.message}</div>
-          </div>
+        <div className={`toast ${toast.type}`}>
+          {toast.type === "success" ? "✅" : "❌"} {toast.message}
         </div>
       )}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
         {/* SERVICE */}
         <label>Service</label>
         <select
@@ -131,26 +154,39 @@ const ApplyService = () => {
 
         {/* APPLICANT */}
         <h4>Applicant Details</h4>
-        <input name="fullName" placeholder="Full Name" value={formData.fullName} onChange={handleChange} required />
-        <input name="address" placeholder="Address" value={formData.address} onChange={handleChange} required />
-        <input name="mobile" placeholder="Mobile Number" value={formData.mobile} onChange={handleChange} required />
+        <input
+          name="fullName"
+          placeholder="Full Name"
+          value={formData.fullName}
+          onChange={handleChange}
+          required
+        />
+        <input
+          name="address"
+          placeholder="Address"
+          value={formData.address}
+          onChange={handleChange}
+          required
+        />
+        <input
+          name="mobile"
+          placeholder="Mobile Number"
+          value={formData.mobile}
+          onChange={handleChange}
+          required
+        />
 
-        {/* BIRTH CERTIFICATE */}
+        {/* ================= BIRTH ================= */}
         {formData.serviceType === "Birth Certificate" && (
           <>
             <h4>Required Documents</h4>
             <input type="file" name="hospitalSlip" onChange={handleFileChange} required />
-            <small>Hospital Slip (max 2MB)</small>
-
             <input type="file" name="parentsAadhaar" onChange={handleFileChange} required />
-            <small>Parents Aadhaar (max 2MB)</small>
-
             <input type="file" name="addressProof" onChange={handleFileChange} required />
-            <small>Address Proof (max 2MB)</small>
           </>
         )}
 
-        {/* DEATH CERTIFICATE */}
+        {/* ================= DEATH ================= */}
         {formData.serviceType === "Death Certificate" && (
           <>
             <h4>Deceased Details</h4>
@@ -171,50 +207,48 @@ const ApplyService = () => {
 
             <h4>Required Documents</h4>
             <input type="file" name="hospitalDeathSlip" onChange={handleFileChange} required />
-            <small>Hospital Death Slip (max 2MB)</small>
-
             <input type="file" name="deceasedAadhaar" onChange={handleFileChange} required />
-            <small>Aadhaar of Deceased (max 2MB)</small>
-
             <input type="file" name="applicantAadhaar" onChange={handleFileChange} required />
-            <small>Aadhaar of Applicant (max 2MB)</small>
-
             <input type="file" name="addressProof" onChange={handleFileChange} required />
-            <small>Address Proof (max 2MB)</small>
           </>
         )}
 
-        {/* INCOME CERTIFICATE */}
+        {/* ================= INCOME ================= */}
         {formData.serviceType === "Income Certificate" && (
           <>
             <h4>Required Documents</h4>
             <input type="file" name="aadhaar" onChange={handleFileChange} required />
-            <small>Aadhaar Card (max 2MB)</small>
-
             <input type="file" name="rationCard" onChange={handleFileChange} required />
-            <small>Ration Card (max 2MB)</small>
-
             <input type="file" name="incomeProof" onChange={handleFileChange} required />
-            <small>Income Proof (max 2MB)</small>
           </>
         )}
 
-        {/* RESIDENCE CERTIFICATE */}
+        {/* ================= RESIDENCE ================= */}
         {formData.serviceType === "Residence Certificate" && (
           <>
             <h4>Required Documents</h4>
             <input type="file" name="aadhaar" onChange={handleFileChange} required />
-            <small>Aadhaar Card (max 2MB)</small>
-
             <input type="file" name="electricityBill" onChange={handleFileChange} required />
-            <small>Electricity Bill (max 2MB)</small>
-
             <input type="file" name="rationCard" onChange={handleFileChange} required />
-            <small>Ration Card (max 2MB)</small>
           </>
         )}
 
-        <button type="submit">Submit Application</button>
+        {/* SUBMIT */}
+        <button type="submit" disabled={loading}>
+          {loading ? <span className="btn-loader"></span> : "Submit Application"}
+        </button>
+        {/* CENTER SUCCESS / ERROR POPUP */}
+{toast.show && (
+  <div className="popup-overlay">
+    <div className={`popup ${toast.type}`}>
+      <div className="popup-icon">
+        {toast.type === "success" ? "✅" : "❌"}
+      </div>
+      <p className="popup-message">{toast.message}</p>
+    </div>
+  </div>
+)}
+
       </form>
     </div>
   );
