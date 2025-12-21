@@ -1,0 +1,78 @@
+.manage-about {
+  padding: 25px;
+}
+
+.manage-about h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0d47a1;
+}
+
+/* CARD VIEW */
+.about-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 800px;
+  margin: auto;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+.about-card h3 {
+  text-align: center;
+  color: #1a237e;
+}
+
+.history {
+  margin: 15px 0;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 15px 0;
+}
+
+.stats div {
+  background: #e3f2fd;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* BUTTON */
+.edit-btn {
+  display: block;
+  margin: 15px auto 0;
+  padding: 8px 20px;
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* FORM */
+.about-form {
+  max-width: 800px;
+  margin: auto;
+}
+
+.about-form input,
+.about-form textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.form-actions button {
+  padding: 8px 16px;
+}

@@ -1,0 +1,444 @@
+/* ManageContacts.css - Professional Light Theme */
+
+:root {
+  --primary: #5B8DEE;
+  --primary-light: #E8F0FE;
+  --success: #10B981;
+  --danger: #EF4444;
+  --text-dark: #1F2937;
+  --text-gray: #6B7280;
+  --bg-light: #F9FAFB;
+  --bg-white: #FFFFFF;
+  --border: #E5E7EB;
+}
+
+.manage-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ============ PAGE HEADER ============ */
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-title {
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: var(--text-gray);
+}
+
+/* ============ NO AUTH ============ */
+.no-auth {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.no-auth p {
+  font-size: 1.125rem;
+  color: var(--text-gray);
+}
+
+/* ============ FORM CARD ============ */
+.form-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 32px;
+}
+
+.form-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 24px;
+}
+
+.member-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  color: var(--text-dark);
+  background: var(--bg-white);
+  transition: all 0.15s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.form-group input:disabled {
+  background: var(--bg-light);
+  color: var(--text-gray);
+  cursor: not-allowed;
+}
+
+/* Photo Upload */
+.photo-upload {
+  grid-column: 1 / -1;
+}
+
+.photo-upload input[type="file"] {
+  padding:5px;
+  cursor: pointer;
+}
+
+.photo-preview {
+  margin-top: 5px;
+  display: flex;
+  justify-content: center;
+}
+
+.photo-preview img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border);
+}
+
+/* Submit Button */
+.submit-btn {
+  grid-column: 1 / -1;
+  padding: 14px 24px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.submit-btn:hover {
+  background: #4A7DD9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(91, 141, 238, 0.3);
+}
+
+/* ============ MEMBERS SECTION ============ */
+.members-section {
+  margin-bottom: 32px;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 20px;
+}
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+/* ============ MEMBER CARD ============ */
+.member-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.2s ease;
+}
+
+.member-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.member-photo {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--border);
+  flex-shrink: 0;
+}
+
+.member-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.member-info {
+  text-align: center;
+  width: 100%;
+}
+
+.member-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+  color: black;
+}
+
+.member-role {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 4px 12px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.member-phone {
+  font-size: 0.875rem;
+  color:black;
+  font-weight: 400;
+}
+
+.view-btn {
+  width: 100%;
+  padding: 10px 16px;
+  background: var(--bg-light);
+  color: var(--text-dark);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.view-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* ============ MODAL ============ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--bg-white);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.modal-close {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--bg-light);
+  color: var(--text-gray);
+  border-radius: 8px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: var(--border);
+  color: var(--text-dark);
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.modal-photo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.modal-photo img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--border);
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  padding: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.edit-btn,
+.save-btn {
+  background: var(--primary);
+  color: white;
+}
+
+.edit-btn:hover,
+.save-btn:hover {
+  background: #4A7DD9;
+}
+
+.delete-btn {
+  background: var(--danger);
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #DC2626;
+}
+
+.cancel-btn {
+  background: var(--bg-light);
+  color: var(--text-dark);
+  border: 1px solid var(--border);
+}
+
+.cancel-btn:hover {
+  background: var(--border);
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+  .manage-container {
+    padding: 0;
+  }
+
+  .page-header {
+    margin-bottom: 24px;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .form-card {
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .member-form {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .member-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .modal-content {
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .modal-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-card {
+    padding: 20px;
+  }
+
+  .page-title {
+    font-size: 1.375rem;
+  }
+
+  .modal-header {
+    padding: 20px;
+  }
+
+  .modal-body {
+    padding: 20px;
+  }
+
+  .modal-photo img {
+    width: 120px;
+    height: 120px;
+  }
+}
