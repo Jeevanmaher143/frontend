@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Notices.css";
 
-/* ✅ SAME PATTERN AS ApplyService */
-const API =
-  process.env.REACT_APP_API_URL ||
-  "https://backend-9i6n.onrender.com";
+/* ✅ DEPLOYMENT-SAFE BACKEND URL */
+const API = "https://backend-9i6n.onrender.com";
 
 const Notices = () => {
   const [notices, setNotices] = useState([]);
@@ -20,13 +18,14 @@ const Notices = () => {
         const data = await res.json();
 
         if (Array.isArray(data)) {
-          // ✅ Important first, latest first
+          // IMPORTANT first, latest first
           const sorted = data.sort((a, b) => {
             if (a.isImportant === b.isImportant) {
               return new Date(b.createdAt) - new Date(a.createdAt);
             }
             return b.isImportant - a.isImportant;
           });
+
           setNotices(sorted);
         } else {
           setNotices([]);
@@ -68,7 +67,6 @@ const Notices = () => {
   return (
     <div className="notice-container">
       <div className="notice-content">
-
         {/* HEADER */}
         <div className="notice-header">
           <h1 className="header-title">Notice Board</h1>
@@ -80,62 +78,48 @@ const Notices = () => {
         {/* NOTICE LIST */}
         {notices.length === 0 ? (
           <div className="empty-state">
-            <p className="empty-text">
-              No notices available at the moment
-            </p>
+            <p className="empty-text">No notices available</p>
           </div>
         ) : (
           <div className="notice-grid">
-            {notices.map((notice) => {
-              /* ✅ CLOUD + LOCAL ATTACHMENT SUPPORT */
-              const attachmentUrl =
-                notice.attachment?.startsWith("http")
-                  ? notice.attachment
-                  : notice.attachment
-                  ? `${API}${notice.attachment}`
-                  : null;
-
-              return (
-                <div
-                  key={notice._id}
-                  className={`notice-card ${
-                    notice.isImportant ? "notice-important" : ""
-                  }`}
-                >
-                  {notice.isImportant && (
-                    <div className="important-ribbon">
-                      <span>IMPORTANT</span>
-                    </div>
-                  )}
-
-                  <div className="notice-body">
-                    <h3 className="notice-title">
-                      {notice.title}
-                    </h3>
-
-                    <p className="notice-date">
-                      {new Date(notice.createdAt).toLocaleDateString()}
-                    </p>
-
-                    <p className="notice-description">
-                      {notice.description}
-                    </p>
-
-                    {/* ATTACHMENT */}
-                    {attachmentUrl && (
-                      <a
-                        href={attachmentUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="notice-attachment"
-                      >
-                        View / Download Document
-                      </a>
-                    )}
+            {notices.map((notice) => (
+              <div
+                key={notice._id}
+                className={`notice-card ${
+                  notice.isImportant ? "notice-important" : ""
+                }`}
+              >
+                {notice.isImportant && (
+                  <div className="important-ribbon">
+                    <span>IMPORTANT</span>
                   </div>
+                )}
+
+                <div className="notice-body">
+                  <h3 className="notice-title">{notice.title}</h3>
+
+                  <p className="notice-date">
+                    {new Date(notice.createdAt).toLocaleDateString()}
+                  </p>
+
+                  <p className="notice-description">
+                    {notice.description}
+                  </p>
+
+                  {/* ✅ CLOUDINARY ATTACHMENT */}
+                  {notice.attachment && (
+                    <a
+                      href={notice.attachment}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="notice-attachment"
+                    >
+                      View / Download Document
+                    </a>
+                  )}
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         )}
       </div>
