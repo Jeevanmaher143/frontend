@@ -1,4 +1,4 @@
-/* Footer.css */
+/* Footer.css - Optimized Responsive Design */
 
 /* MAIN FOOTER */
 .footer {
@@ -63,7 +63,7 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .footer-section ul li a {
@@ -76,6 +76,7 @@
   align-items: center;
   position: relative;
   padding-left: 0;
+  line-height: 1.4;
 }
 
 .footer-section ul li a::before {
@@ -115,6 +116,7 @@
   color: #3b82f6;
   font-weight: 600;
   transition: color 0.3s ease;
+  cursor: pointer;
 }
 
 .dev-name:hover {
@@ -122,7 +124,7 @@
 }
 
 /* TABLET */
-@media (min-width: 768px) {
+@media (min-width: 768px) and (max-width: 1023px) {
   .footer-container {
     grid-template-columns: repeat(2, 1fr);
     padding: 36px 32px 28px;
@@ -148,34 +150,114 @@
     gap: 40px;
     padding: 40px 32px 32px;
   }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+  }
+
+  .footer-bottom p {
+    margin: 0;
+  }
 }
 
-/* SMALL SCREENS */
-@media (max-width: 640px) {
+/* MOBILE - OPTIMIZED LAYOUT */
+@media (max-width: 767px) {
   .footer-container {
-    padding: 28px 20px 20px;
-    gap: 28px;
+    padding: 24px 16px 20px;
+    gap: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "about about"
+      "links contact"
+      "office office";
+  }
+
+  /* First section (About) - full width */
+  .footer-section:nth-child(1) {
+    grid-area: about;
+  }
+
+  /* Quick Links - left column */
+  .footer-section:nth-child(2) {
+    grid-area: links;
+  }
+
+  /* Contact - right column */
+  .footer-section:nth-child(3) {
+    grid-area: contact;
+  }
+
+  /* Office Hours - full width */
+  .footer-section:nth-child(4) {
+    grid-area: office;
   }
 
   .footer-section h3 {
     font-size: 16px;
+    margin-bottom: 10px;
   }
 
   .footer-section h4 {
     font-size: 13px;
+    margin-bottom: 10px;
   }
 
   .footer-section p,
   .footer-section ul li a {
     font-size: 12px;
+    line-height: 1.5;
+  }
+
+  /* Reduce gap in lists */
+  .footer-section ul {
+    gap: 3px;
   }
 
   .footer-bottom {
-    padding: 14px 20px;
+    padding: 14px 16px;
   }
 
   .footer-bottom p {
     font-size: 11px;
+  }
+}
+
+/* EXTRA SMALL SCREENS */
+@media (max-width: 480px) {
+  .footer-container {
+    padding: 20px 12px 16px;
+    gap: 16px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-section h3 {
+    font-size: 15px;
+  }
+
+  .footer-section h4 {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .footer-section p,
+  .footer-section ul li a {
+    font-size: 11px;
+  }
+
+  .footer-section ul {
+    gap: 2px;
+  }
+
+  .footer-bottom {
+    padding: 12px;
+  }
+
+  .footer-bottom p {
+    font-size: 10px;
   }
 }
 
@@ -201,4 +283,20 @@
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* Clear floats */
+.footer-container::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Remove float-related code on mobile */
+@media (max-width: 767px) {
+  .footer-section {
+    float: none !important;
+    width: auto !important;
+    padding: 0 !important;
+  }
 }
