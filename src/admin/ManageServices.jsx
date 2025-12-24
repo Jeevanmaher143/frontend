@@ -1,215 +1,181 @@
 import React, { useEffect, useState } from "react";
 import "./ManageServices.css";
 
+const API = "https://backend-9i6n.onrender.com";
+
 const ManageServices = () => {
   const [applications, setApplications] = useState([]);
-  const [activeFilter, setActiveFilter] = useState("Pending");
-  const [showRejectModal, setShowRejectModal] = useState(false);
-  const [rejectReason, setRejectReason] = useState("");
+  const [activeFilter, setActiveFilter] = useState("pending");
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState(""); // approved | rejected
+  const [message, setMessage] = useState("");
   const [selectedAppId, setSelectedAppId] = useState(null);
 
   const token = localStorage.getItem("token");
 
-  /* ================= FETCH APPLICATIONS ================= */
+  /* ================= FETCH ================= */
   const fetchApplications = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/api/admin/services", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await res.json();
-      setApplications(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error("Fetch failed", err);
-    }
+    const res = await fetch(`${API}/api/admin/services`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    setApplications(Array.isArray(data) ? data : []);
   };
 
   useEffect(() => {
     fetchApplications();
   }, []);
 
-  /* ================= UPDATE STATUS ================= */
-  const updateStatus = async (id, status, adminRemark = "") => {
-    try {
-      await fetch(`http://localhost:5000/api/admin/services/${id}/status`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status, adminRemark }), // ✅ FIXED
-      });
-
-      fetchApplications();
-    } catch (err) {
-      console.error("Status update failed", err);
-    }
-  };
-
-  /* ================= REJECT HANDLERS ================= */
-  const handleReject = (id) => {
+  /* ================= OPEN MODAL ================= */
+  const openModal = (id, type) => {
     setSelectedAppId(id);
-    setShowRejectModal(true);
+    setModalType(type);
+    setMessage("");
+    setShowModal(true);
   };
 
-  const confirmReject = () => {
-    if (!rejectReason.trim()) {
-      alert("Please enter rejection reason");
+  /* ================= CONFIRM ================= */
+  const confirmAction = async () => {
+    if (!message.trim()) {
+      alert("Message is required");
       return;
     }
 
-    updateStatus(selectedAppId, "Rejected", rejectReason);
-    setShowRejectModal(false);
-    setRejectReason("");
+    await fetch(`${API}/api/admin/services/${selectedAppId}/status`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        status: modalType, // approved | rejected
+        adminRemark: message,
+      }),
+    });
+
+    setShowModal(false);
     setSelectedAppId(null);
+    setMessage("");
+    fetchApplications();
   };
 
-  const cancelReject = () => {
-    setShowRejectModal(false);
-    setRejectReason("");
-    setSelectedAppId(null);
-  };
+  /* ================= FILTER (FIXED) ================= */
+  const filteredApps = applications.filter(
+    (a) => a.status?.toLowerCase() === activeFilter
+  );
 
-  /* ================= FILTERS ================= */
-  const pending = applications.filter((a) => a.status === "Pending");
-  const approved = applications.filter((a) => a.status === "Approved");
-  const rejected = applications.filter((a) => a.status === "Rejected");
-
-  const getFilteredApps = () => {
-    if (activeFilter === "Approved") return approved;
-    if (activeFilter === "Rejected") return rejected;
-    return pending;
-  };
-
-  const filteredApps = getFilteredApps();
+  const count = (status) =>
+    applications.filter((a) => a.status?.toLowerCase() === status).length;
 
   return (
     <div className="manage-services">
       <h2>Service Applications Management</h2>
 
-      {/* ================= FILTER BUTTONS ================= */}
+      {/* FILTER BUTTONS */}
       <div className="filter-buttons">
         <button
-          className={`filter-btn pending-btn ${
-            activeFilter === "Pending" ? "active" : ""
-          }`}
-          onClick={() => setActiveFilter("Pending")}
+          className={activeFilter === "pending" ? "active" : ""}
+          onClick={() => setActiveFilter("pending")}
         >
-          🕒 Pending ({pending.length})
+          🕒 Pending ({count("pending")})
         </button>
 
         <button
-          className={`filter-btn approved-btn ${
-            activeFilter === "Approved" ? "active" : ""
-          }`}
-          onClick={() => setActiveFilter("Approved")}
+          className={activeFilter === "approved" ? "active" : ""}
+          onClick={() => setActiveFilter("approved")}
         >
-          ✅ Approved ({approved.length})
+          ✅ Approved ({count("approved")})
         </button>
 
         <button
-          className={`filter-btn rejected-btn ${
-            activeFilter === "Rejected" ? "active" : ""
-          }`}
-          onClick={() => setActiveFilter("Rejected")}
+          className={activeFilter === "rejected" ? "active" : ""}
+          onClick={() => setActiveFilter("rejected")}
         >
-          ❌ Rejected ({rejected.length})
+          ❌ Rejected ({count("rejected")})
         </button>
       </div>
 
-      {/* ================= APPLICATION LIST ================= */}
-      <section className="applications-section">
+      {/* LIST */}
+      <div className="cards-container">
         {filteredApps.length === 0 && (
-          <p className="no-data">
-            No {activeFilter.toLowerCase()} applications
-          </p>
+          <p className="no-data">No applications found</p>
         )}
 
-        <div className="cards-container">
-          {filteredApps.map((app) => (
-            <div className="service-card" key={app._id}>
-              <p><b>Name:</b> {app.fullName}</p>
-              <p><b>Service:</b> {app.serviceType}</p>
-              <p><b>Mobile:</b> {app.mobile}</p>
-              <p><b>Address:</b> {app.address}</p>
-              <p>
-                <b>Date:</b>{" "}
-                {new Date(app.createdAt).toLocaleDateString()}
+        {filteredApps.map((app) => (
+          <div className="service-card" key={app._id}>
+            <p><b>Name:</b> {app.fullName}</p>
+            <p><b>Service:</b> {app.serviceType}</p>
+            <p><b>Mobile:</b> {app.mobile}</p>
+
+            {/* DOCUMENTS */}
+            {app.documents && (
+              <div className="documents-list">
+                {Object.entries(app.documents).map(([name, url], i) => (
+                  <a key={i} href={url} target="_blank" rel="noreferrer">
+                    📎 {name}
+                  </a>
+                ))}
+              </div>
+            )}
+
+            {/* ADMIN MESSAGE */}
+            {app.adminRemark && (
+              <p className="remark">
+                <b>Admin Message:</b> {app.adminRemark}
               </p>
+            )}
 
-              {/* ================= DOCUMENTS ================= */}
-              {app.documents && Object.keys(app.documents).length > 0 && (
-                <div className="documents-section">
-                  <b>📄 Uploaded Documents:</b>
+            {/* ACTIONS */}
+            {activeFilter === "pending" && (
+              <div className="actions">
+                <button
+                  className="approve-btn"
+                  onClick={() => openModal(app._id, "approved")}
+                >
+                  Approve
+                </button>
 
-                  <div className="documents-list">
-                    {Object.entries(app.documents).map(
-                      ([key, value], index) => (
-                        <a
-                          key={index}
-                          href={value}               // ✅ CLOUDINARY URL
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="document-link"
-                        >
-                          📎 {key.replace(/([A-Z])/g, " $1")}
-                        </a>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
+                <button
+                  className="reject-btn"
+                  onClick={() => openModal(app._id, "rejected")}
+                >
+                  Reject
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
 
-              {/* ================= REJECTED ================= */}
-              {activeFilter === "Rejected" && app.adminRemark && (
-                <div className="rejection-reason">
-                  <b>Rejection Reason:</b>
-                  <p>{app.adminRemark}</p>
-                </div>
-              )}
-
-              {/* ================= ACTIONS ================= */}
-              {activeFilter === "Pending" && (
-                <div className="actions">
-                  <button
-                    className="approve-btn"
-                    onClick={() => updateStatus(app._id, "Approved")}
-                  >
-                    Approve
-                  </button>
-
-                  <button
-                    className="reject-btn"
-                    onClick={() => handleReject(app._id)}
-                  >
-                    Reject
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ================= REJECT MODAL ================= */}
-      {showRejectModal && (
+      {/* POPUP */}
+      {showModal && (
         <div className="modal-overlay">
-          <div className="reject-modal">
-            <h3>❌ Reject Application</h3>
+          <div className="modal-box">
+            <h3>
+              {modalType === "approved"
+                ? "Approve Application"
+                : "Reject Application"}
+            </h3>
 
             <textarea
-              placeholder="Enter rejection reason..."
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-              rows="4"
+              placeholder={
+                modalType === "approved"
+                  ? "Your documents are ready. Come to Panchayat today at 4 PM."
+                  : "Enter rejection reason"
+              }
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
             />
 
             <div className="modal-actions">
-              <button className="confirm-reject-btn" onClick={confirmReject}>
-                Confirm Reject
+              <button className="confirm-btn" onClick={confirmAction}>
+                Confirm
               </button>
-              <button className="cancel-btn" onClick={cancelReject}>
+              <button
+                className="cancel-btn"
+                onClick={() => setShowModal(false)}
+              >
                 Cancel
               </button>
             </div>

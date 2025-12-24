@@ -5,8 +5,7 @@ import { useLocation } from "react-router-dom";
 import "./ApplyService.css";
 
 const API =
-  process.env.REACT_APP_API_URL ||
-  "https://backend-9i6n.onrender.com";
+  process.env.REACT_APP_API_URL || "https://backend-9i6n.onrender.com";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -78,24 +77,16 @@ const ApplyService = () => {
 
     const data = new FormData();
 
-    Object.entries(formData).forEach(([key, value]) =>
-      data.append(key, value)
-    );
+    Object.entries(formData).forEach(([key, value]) => data.append(key, value));
 
-    Object.entries(files).forEach(([key, file]) =>
-      data.append(key, file)
-    );
+    Object.entries(files).forEach(([key, file]) => data.append(key, file));
 
     try {
-      const res = await axios.post(
-        `${API}/api/services/apply`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axios.post(`${API}/api/services/apply`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       showToast(
         res.data.message || "Application submitted successfully ✅",
@@ -115,10 +106,7 @@ const ApplyService = () => {
       }, 1500);
     } catch (err) {
       console.error("Apply service error:", err);
-      showToast(
-        err.response?.data?.message || "Submission failed ❌",
-        "error"
-      );
+      showToast(err.response?.data?.message || "Submission failed ❌", "error");
     } finally {
       setLoading(false);
     }
@@ -180,9 +168,24 @@ const ApplyService = () => {
         {formData.serviceType === "Birth Certificate" && (
           <>
             <h4>Required Documents</h4>
-            <input type="file" name="hospitalSlip" onChange={handleFileChange} required />
-            <input type="file" name="parentsAadhaar" onChange={handleFileChange} required />
-            <input type="file" name="addressProof" onChange={handleFileChange} required />
+            <input
+              type="file"
+              name="hospitalSlip"
+              onChange={handleFileChange}
+              required
+            />
+            <input
+              type="file"
+              name="parentsAadhaar"
+              onChange={handleFileChange}
+              required
+            />
+            <input
+              type="file"
+              name="addressProof"
+              onChange={handleFileChange}
+              required
+            />
           </>
         )}
 
@@ -206,10 +209,30 @@ const ApplyService = () => {
             />
 
             <h4>Required Documents</h4>
-            <input type="file" name="hospitalDeathSlip" onChange={handleFileChange} required />
-            <input type="file" name="deceasedAadhaar" onChange={handleFileChange} required />
-            <input type="file" name="applicantAadhaar" onChange={handleFileChange} required />
-            <input type="file" name="addressProof" onChange={handleFileChange} required />
+            <input
+              type="file"
+              name="hospitalDeathSlip"
+              onChange={handleFileChange}
+              required
+            />
+            <input
+              type="file"
+              name="deceasedAadhaar"
+              onChange={handleFileChange}
+              required
+            />
+            <input
+              type="file"
+              name="applicantAadhaar"
+              onChange={handleFileChange}
+              required
+            />
+            <input
+              type="file"
+              name="addressProof"
+              onChange={handleFileChange}
+              required
+            />
           </>
         )}
 
@@ -217,9 +240,24 @@ const ApplyService = () => {
         {formData.serviceType === "Income Certificate" && (
           <>
             <h4>Required Documents</h4>
-            <input type="file" name="aadhaar" onChange={handleFileChange} required />
-            <input type="file" name="rationCard" onChange={handleFileChange} required />
-            <input type="file" name="incomeProof" onChange={handleFileChange} required />
+            <input
+              type="file"
+              name="aadhaar"
+              onChange={handleFileChange}
+              required
+            />
+            <input
+              type="file"
+              name="rationCard"
+              onChange={handleFileChange}
+              required
+            />
+            <input
+              type="file"
+              name="incomeProof"
+              onChange={handleFileChange}
+              required
+            />
           </>
         )}
 
@@ -227,28 +265,46 @@ const ApplyService = () => {
         {formData.serviceType === "Residence Certificate" && (
           <>
             <h4>Required Documents</h4>
-            <input type="file" name="aadhaar" onChange={handleFileChange} required />
-            <input type="file" name="electricityBill" onChange={handleFileChange} required />
-            <input type="file" name="rationCard" onChange={handleFileChange} required />
+            <input
+              type="file"
+              name="aadhaar"
+              onChange={handleFileChange}
+              required
+            />
+            <input
+              type="file"
+              name="electricityBill"
+              onChange={handleFileChange}
+              required
+            />
+            <input
+              type="file"
+              name="rationCard"
+              onChange={handleFileChange}
+              required
+            />
           </>
         )}
 
         {/* SUBMIT */}
         <button type="submit" disabled={loading}>
-          {loading ? <span className="btn-loader"></span> : "Submit Application"}
+          {loading ? (
+            <span className="btn-loader"></span>
+          ) : (
+            "Submit Application"
+          )}
         </button>
         {/* CENTER SUCCESS / ERROR POPUP */}
-{toast.show && (
-  <div className="popup-overlay">
-    <div className={`popup ${toast.type}`}>
-      <div className="popup-icon">
-        {toast.type === "success" ? "✅" : "❌"}
-      </div>
-      <p className="popup-message">{toast.message}</p>
-    </div>
-  </div>
-)}
-
+        {toast.show && (
+          <div className="popup-overlay">
+            <div className={`popup ${toast.type}`}>
+              <div className="popup-icon">
+                {toast.type === "success" ? "✅" : "❌"}
+              </div>
+              <p className="popup-message">{toast.message}</p>
+            </div>
+          </div>
+        )}
       </form>
     </div>
   );

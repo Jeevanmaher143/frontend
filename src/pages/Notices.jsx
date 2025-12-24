@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import "./Notices.css";
 
 /* ✅ DEPLOYMENT-SAFE BACKEND URL */
-const API = "https://backend-9i6n.onrender.com";
+//const API = "https://backend-9i6n.onrender.com";
+const API =
+  process.env.REACT_APP_API_URL ||
+  "https://backend-9i6n.onrender.com";
 
 const Notices = () => {
   const [notices, setNotices] = useState([]);
@@ -69,7 +72,7 @@ const Notices = () => {
       <div className="notice-content">
         {/* HEADER */}
         <div className="notice-header">
-          <h1 className="header-title">Notice Board</h1>
+          <h1 className="header-title"> Latest Notice </h1>
           <p className="header-subtitle">
             Stay updated with the latest announcements
           </p>
@@ -102,21 +105,27 @@ const Notices = () => {
                     {new Date(notice.createdAt).toLocaleDateString()}
                   </p>
 
-                  <p className="notice-description">
-                    {notice.description}
-                  </p>
+                  <p className="notice-description">{notice.description}</p>
 
                   {/* ✅ CLOUDINARY ATTACHMENT */}
-                  {notice.attachment && (
-                    <a
-                      href={notice.attachment}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="notice-attachment"
-                    >
-                      View / Download Document
-                    </a>
-                  )}
+                  {notice.attachment &&
+                    (notice.attachment.match(/\.(jpg|jpeg|png|webp)$/i) ? (
+                      <img
+                        src={notice.attachment}
+                        alt="Notice"
+                        className="notice-image"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <a
+                        href={notice.attachment}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="notice-attachment"
+                      >
+                        📄 View / Download Document
+                      </a>
+                    ))}
                 </div>
               </div>
             ))}

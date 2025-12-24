@@ -10,7 +10,7 @@ const Services = () => {
     {
       id: 1,
       title: "Birth Certificate",
-      icon: "👶",
+     
       description:
         "Apply for official birth certificate issued by Gram Panchayat.",
       documents: ["Hospital slip", "Parents Aadhaar", "Address proof"],
@@ -18,28 +18,27 @@ const Services = () => {
     {
       id: 2,
       title: "Death Certificate",
-      icon: "🕊️",
+     
       description: "Apply for death certificate for official records.",
       documents: ["Hospital slip", "Aadhaar of deceased", "Applicant ID"],
     },
     {
       id: 3,
       title: "Income Certificate",
-      icon: "💰",
+      
       description: "Certificate for income proof for schemes & education.",
       documents: ["Aadhaar card", "Ration card", "Income proof"],
     },
     {
       id: 4,
       title: "Residence Certificate",
-      icon: "🏠",
+      
       description: "Proof of residence for government services.",
       documents: ["Aadhaar card", "Electricity bill", "Ration card"],
     },
     {
       id: 6,
       title: "Marriage Certificate",
-      icon: "💑",
       description: "Legal marriage registration certificate.",
       documents: ["Age proof", "Address proof", "Marriage invitation", "Photos"],
     },

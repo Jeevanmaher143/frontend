@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./ManageAbout.css";
 
+/* ✅ CLOUD BACKEND */
+const API = "https://backend-9i6n.onrender.com";
+
 const ManageAbout = () => {
   const [form, setForm] = useState({
     name: "",
@@ -15,40 +18,53 @@ const ManageAbout = () => {
   const [editMode, setEditMode] = useState(false);
   const token = localStorage.getItem("token");
 
+  /* ================= FETCH FROM CLOUD ================= */
   useEffect(() => {
-    fetch("http://localhost:5000/api/village")
+    fetch(`${API}/api/village`)
       .then((res) => res.json())
-      .then((data) => data && setForm(data));
+      .then((data) => {
+        if (data) setForm(data);
+      })
+      .catch((err) => console.error("Fetch village error:", err));
   }, []);
 
+  /* ================= HANDLE CHANGE ================= */
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  /* ================= SAVE TO CLOUD ================= */
   const saveData = async (e) => {
     e.preventDefault();
 
-    await fetch("http://localhost:5000/api/village", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(form),
-    });
+    try {
+      const res = await fetch(`${API}/api/village`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(form),
+      });
 
-    alert("Village details updated");
-    setEditMode(false);
+      if (!res.ok) throw new Error("Failed to save");
+
+      alert("✅ Village details updated successfully");
+      setEditMode(false);
+    } catch (err) {
+      console.error("Save error:", err);
+      alert("❌ Failed to update village details");
+    }
   };
 
   return (
     <div className="manage-about">
       <h2>Village Information (Admin)</h2>
 
-      {/* VIEW MODE */}
+      {/* ================= VIEW MODE ================= */}
       {!editMode && (
         <div className="about-card">
-          <h3>{form.name}</h3>
+          <h3>{form.name || "Village Name"}</h3>
           <p className="history">{form.history}</p>
 
           <div className="stats">
@@ -66,20 +82,63 @@ const ManageAbout = () => {
         </div>
       )}
 
-      {/* EDIT MODE */}
+      {/* ================= EDIT MODE ================= */}
       {editMode && (
         <form className="about-form" onSubmit={saveData}>
-          <input name="name" placeholder="Village Name" value={form.name} onChange={handleChange} />
-          <textarea name="history" placeholder="Village History" value={form.history} onChange={handleChange} />
-          <input name="populationTotal" placeholder="Total Population" value={form.populationTotal} onChange={handleChange} />
-          <input name="populationMale" placeholder="Male Population" value={form.populationMale} onChange={handleChange} />
-          <input name="populationFemale" placeholder="Female Population" value={form.populationFemale} onChange={handleChange} />
-          <input name="area" placeholder="Area (sq km)" value={form.area} onChange={handleChange} />
-          <textarea name="description" placeholder="Extra Description" value={form.description} onChange={handleChange} />
+          <input
+            name="name"
+            placeholder="Village Name"
+            value={form.name}
+            onChange={handleChange}
+          />
+
+          <textarea
+            name="history"
+            placeholder="Village History"
+            value={form.history}
+            onChange={handleChange}
+          />
+
+          <input
+            name="populationTotal"
+            placeholder="Total Population"
+            value={form.populationTotal}
+            onChange={handleChange}
+          />
+
+          <input
+            name="populationMale"
+            placeholder="Male Population"
+            value={form.populationMale}
+            onChange={handleChange}
+          />
+
+          <input
+            name="populationFemale"
+            placeholder="Female Population"
+            value={form.populationFemale}
+            onChange={handleChange}
+          />
+
+          <input
+            name="area"
+            placeholder="Area (sq km)"
+            value={form.area}
+            onChange={handleChange}
+          />
+
+          <textarea
+            name="description"
+            placeholder="Extra Description"
+            value={form.description}
+            onChange={handleChange}
+          />
 
           <div className="form-actions">
             <button type="submit">Save</button>
-            <button type="button" onClick={() => setEditMode(false)}>Cancel</button>
+            <button type="button" onClick={() => setEditMode(false)}>
+              Cancel
+            </button>
           </div>
         </form>
       )}

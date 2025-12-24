@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import "./Gallery.css";
 
-// const API =
-//   process.env.REACT_APP_API_URL ||
-//   "https://backend-9i6n.onrender.com";
-
 const Gallery = () => {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL || "https://backend-9i6n.onrender.com" }/api/gallery`)
+    fetch(
+      `${
+        process.env.REACT_APP_API_URL ||
+        "https://backend-9i6n.onrender.com"
+      }/api/gallery`
+    )
       .then((res) => res.json())
-      .then(setImages)
+      .then((data) => setImages(Array.isArray(data) ? data : []))
       .catch(console.error);
   }, []);
 
@@ -21,13 +22,19 @@ const Gallery = () => {
 
       <div className="gallery-grid">
         {images.map((img) => (
-          <img
-            key={img._id}
-            src={img.image}         
-            alt={img.caption || "Gallery Image"}
-            className="gallery-img"
-            loading="lazy"
-          />
+          <div key={img._id} className="gallery-card">
+            <img
+              src={img.image}
+              alt={img.caption || "Gallery Image"}
+              className="gallery-img"
+              loading="lazy"
+            />
+
+            {/* ✅ ONE LINE CAPTION */}
+            {img.caption && (
+              <p className="gallery-caption">{img.caption}</p>
+            )}
+          </div>
         ))}
       </div>
     </div>

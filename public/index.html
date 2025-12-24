@@ -1,24 +1,45 @@
-
-
-
 <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>E-Gram Panchayat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
 
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <div id='root'></div>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-        
-        <script src="" async defer></script>
-    </body>
+  <body>
+    <div id="root"></div>
+
+    <!-- Hidden Google Translate -->
+    <div id="google_translate_element" style="display:none"></div>
+
+    <script>
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: "en",
+            includedLanguages: "en,mr",
+            autoDisplay: false
+          },
+          "google_translate_element"
+        );
+      }
+
+      // SAFE language switch
+      window.changeLanguage = function (lang) {
+        const interval = setInterval(() => {
+          const select = document.querySelector(".goog-te-combo");
+          if (select) {
+            select.value = lang;
+            select.dispatchEvent(new Event("change"));
+            clearInterval(interval);
+          }
+        }, 300);
+      };
+    </script>
+
+    <script
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+      async
+    ></script>
+  </body>
 </html>
-<meta name="viewport" content="width=device-width, initial-scale=1" />

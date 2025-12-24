@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./ManageContacts.css";
 
+/* ✅ CLOUD BACKEND */
+const API = "https://backend-9i6n.onrender.com";
+
 const ManageContacts = () => {
   const token = localStorage.getItem("token");
 
@@ -17,13 +20,20 @@ const ManageContacts = () => {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // FORM STATES
+  /* ===== FORM STATES ===== */
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
+
+  /* ===== TOAST ===== */
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "success", // success | error
+  });
 
   const roles = [
     "Sarpanch",
@@ -36,14 +46,22 @@ const ManageContacts = () => {
     "ASHA Worker",
   ];
 
-  // FETCH MEMBERS
+  /* ===== TOAST HANDLER ===== */
+  const showToast = (message, type = "success") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => {
+      setToast({ show: false, message: "", type: "success" });
+    }, 2500);
+  };
+
+  /* ===== FETCH MEMBERS ===== */
   const fetchMembers = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/contacts");
+      const res = await fetch(`${API}/api/contacts`);
       const data = await res.json();
-      setMembers(data);
+      setMembers(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error("Fetch failed", err);
+      showToast("Failed to fetch members", "error");
     }
   };
 
@@ -51,7 +69,7 @@ const ManageContacts = () => {
     fetchMembers();
   }, []);
 
-  // PHOTO PREVIEW
+  /* ===== PHOTO PREVIEW ===== */
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     setPhoto(file);
@@ -63,7 +81,7 @@ const ManageContacts = () => {
     }
   };
 
-  // ADD MEMBER
+  /* ===== ADD MEMBER ===== */
   const addMember = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -76,11 +94,9 @@ const ManageContacts = () => {
     if (photo) formData.append("photo", photo);
 
     try {
-      await fetch("http://localhost:5000/api/contacts", {
+      await fetch(`${API}/api/contacts`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
@@ -92,164 +108,101 @@ const ManageContacts = () => {
       setPhotoPreview(null);
 
       fetchMembers();
+      showToast("Member added successfully ✅", "success");
     } catch (err) {
-      alert("Failed to add member");
-      console.error(err);
+      showToast("Failed to add member ❌", "error");
     } finally {
       setLoading(false);
     }
   };
 
-  // DELETE MEMBER
+  /* ===== DELETE MEMBER ===== */
   const deleteMember = async (id) => {
     if (!window.confirm("Delete this member?")) return;
 
-    await fetch(`http://localhost:5000/api/contacts/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      await fetch(`${API}/api/contacts/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    setSelectedMember(null);
-    fetchMembers();
+      setSelectedMember(null);
+      fetchMembers();
+      showToast("Member deleted successfully 🗑️", "success");
+    } catch {
+      showToast("Delete failed ❌", "error");
+    }
   };
 
-  // UPDATE MEMBER
+  /* ===== UPDATE MEMBER ===== */
   const updateMember = async () => {
-    await fetch(`http://localhost:5000/api/contacts/${selectedMember._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        name: selectedMember.name,
-        role: selectedMember.role,
-        phone: selectedMember.phone,
-        email: selectedMember.email,
-      }),
-    });
+    try {
+      await fetch(`${API}/api/contacts/${selectedMember._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: selectedMember.name,
+          role: selectedMember.role,
+          phone: selectedMember.phone,
+          email: selectedMember.email,
+        }),
+      });
 
-    setEditMode(false);
-    fetchMembers();
+      setEditMode(false);
+      fetchMembers();
+      showToast("Member updated successfully ✏️", "success");
+    } catch {
+      showToast("Update failed ❌", "error");
+    }
   };
 
   return (
     <div className="manage-container">
       <h1 className="page-title">Manage Gram Panchayat Contacts</h1>
 
-      {/* ADD MEMBER FORM */}
+      {/* ===== ADD FORM ===== */}
       <form className="member-form" onSubmit={addMember}>
-        <input
-          placeholder="Full Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-
+        <input placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} required />
         <select value={role} onChange={(e) => setRole(e.target.value)} required>
           <option value="">Select Role</option>
-          {roles.map((r) => (
-            <option key={r}>{r}</option>
-          ))}
+          {roles.map((r) => <option key={r}>{r}</option>)}
         </select>
-
-        <input
-          placeholder="Phone"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          required
-        />
-
-        <input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
+        <input placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+        <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
         <input type="file" accept="image/*" onChange={handlePhotoChange} />
 
-        {photoPreview && (
-          <div className="photo-preview">
-            <img src={photoPreview} alt="Preview" />
-          </div>
-        )}
+        {photoPreview && <img src={photoPreview} className="preview-img" alt="preview" />}
 
-        <button type="submit" className="submit-btn" disabled={loading}>
+        <button type="submit" disabled={loading}>
           {loading ? <span className="btn-loader"></span> : "Add Member"}
         </button>
       </form>
 
-      {/* MEMBERS LIST */}
+      {/* ===== MEMBER LIST ===== */}
       <div className="member-grid">
         {members.map((m) => (
           <div className="member-card" key={m._id}>
-            <img
-              src={m.photo}
-              alt={m.name}
-              onError={(e) =>
-                (e.target.src =
-                  "https://via.placeholder.com/150?text=No+Image")
-              }
-            />
+            <img src={m.photo} alt={m.name} />
             <h4>{m.name}</h4>
             <p>{m.role}</p>
-            <p>{m.phone}</p>
             <button onClick={() => setSelectedMember(m)}>View</button>
           </div>
         ))}
       </div>
 
-      {/* VIEW / EDIT MODAL */}
+      {/* ===== MODAL ===== */}
       {selectedMember && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>Member Details</h3>
-
-            <input
-              value={selectedMember.name}
-              disabled={!editMode}
-              onChange={(e) =>
-                setSelectedMember({
-                  ...selectedMember,
-                  name: e.target.value,
-                })
-              }
-            />
-
-            <input
-              value={selectedMember.role}
-              disabled={!editMode}
-              onChange={(e) =>
-                setSelectedMember({
-                  ...selectedMember,
-                  role: e.target.value,
-                })
-              }
-            />
-
-            <input
-              value={selectedMember.phone}
-              disabled={!editMode}
-              onChange={(e) =>
-                setSelectedMember({
-                  ...selectedMember,
-                  phone: e.target.value,
-                })
-              }
-            />
-
-            <input
-              value={selectedMember.email}
-              disabled={!editMode}
-              onChange={(e) =>
-                setSelectedMember({
-                  ...selectedMember,
-                  email: e.target.value,
-                })
-              }
-            />
+            <input value={selectedMember.name} disabled={!editMode}
+              onChange={(e) => setSelectedMember({ ...selectedMember, name: e.target.value })} />
+            <input value={selectedMember.role} disabled={!editMode}
+              onChange={(e) => setSelectedMember({ ...selectedMember, role: e.target.value })} />
+            <input value={selectedMember.phone} disabled={!editMode}
+              onChange={(e) => setSelectedMember({ ...selectedMember, phone: e.target.value })} />
 
             <div className="modal-actions">
               {!editMode ? (
@@ -257,21 +210,17 @@ const ManageContacts = () => {
               ) : (
                 <button onClick={updateMember}>Save</button>
               )}
-
-              <button onClick={() => deleteMember(selectedMember._id)}>
-                Delete
-              </button>
-
-              <button
-                onClick={() => {
-                  setSelectedMember(null);
-                  setEditMode(false);
-                }}
-              >
-                Close
-              </button>
+              <button onClick={() => deleteMember(selectedMember._id)}>Delete</button>
+              <button onClick={() => { setSelectedMember(null); setEditMode(false); }}>Close</button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ===== TOAST ===== */}
+      {toast.show && (
+        <div className={`toast toast-${toast.type}`}>
+          {toast.message}
         </div>
       )}
     </div>
