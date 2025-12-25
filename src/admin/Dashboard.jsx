@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Dashboard.css";
 
+const API_BASE = process.env.REACT_APP_API_BASE_URL;
+
 const Dashboard = () => {
   const [stats, setStats] = useState([]);
   const [recentActivities, setRecentActivities] = useState([]);
@@ -24,10 +26,10 @@ const Dashboard = () => {
         schemesRes,
         complaintsRes
       ] = await Promise.all([
-        axios.get("http://localhost:5000/api/notices"),
-        axios.get("http://localhost:5000/api/admin/services"),
-        axios.get("http://localhost:5000/api/schemes"),
-        axios.get("http://localhost:5000/api/contacts")
+        axios.get(`${API_BASE}/api/notices`),
+        axios.get(`${API_BASE}/api/admin/services`),
+        axios.get(`${API_BASE}/api/schemes`),
+        axios.get(`${API_BASE}/api/contacts`)
       ]);
 
       setStats([

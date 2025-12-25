@@ -14,7 +14,7 @@ const AdminLayout = () => {
     { path: "/admin/schemes", name: "Schemes" },
     { path: "/admin/development", name: "Development" },
     { path: "/admin/gallery", name: "Gallery" },
-    { path: "/admin/complaints", name: "Complaints" },
+    // { path: "/admin/complaints", name: "Complaints" },
     { path: "/admin/contact", name: "Member" },
     { path: "/admin/about", name: "About Village" },
   ];
