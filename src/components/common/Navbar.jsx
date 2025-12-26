@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import "./Navbar.css";
 import logo from "../../assets/egram-logo.png";
-
+import i18n from "i18next";
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -48,6 +48,8 @@ const Navbar = () => {
               <Link to="/development">Development</Link>
               <Link to="/gallery">Gallery</Link>
               <Link to="/contact">Members</Link>
+              <button onClick={() => i18n.changeLanguage("en")}>English</button>
+<button onClick={() => i18n.changeLanguage("mr")}>मराठी</button>
 
               {!user && <Link to="/login" className="login-button">Login</Link>}
               {user && (

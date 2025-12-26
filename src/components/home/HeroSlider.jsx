@@ -13,7 +13,7 @@ const HeroSection = () => {
         const data = await res.json();
 
         const filtered = data.filter(
-          (m) => m.role === "Sarpanch" || m.role === "upa-sarpanch"
+          (m) => m.role === "Sarpanch" || m.role === "Upa-Sarpanch"
         );
 
         setLeaders(filtered.slice(0, 2));
@@ -24,8 +24,10 @@ const HeroSection = () => {
 
     fetchLeaders();
   }, []);
-
+  
+    
   return (
+    
     <div className="hero-wrapper">
       <img
         src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3"
@@ -73,6 +75,7 @@ const HeroSection = () => {
 
           <div className="leaders-container">
             {leaders.map((member) => (
+              
               <div className="leader-profile" key={member._id}>
                 <div className="leader-image-wrapper">
                   <img
@@ -83,9 +86,13 @@ const HeroSection = () => {
                       e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
                     }}
                   />
+                  
+
                   <div className="leader-ring"></div>
                 </div>
                 <div className="leader-info">
+                 
+
                   <h4 className="leader-name">{member.name}</h4>
                   <p className="leader-role">{member.role}</p>
                 </div>
