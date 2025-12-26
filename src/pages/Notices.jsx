@@ -50,7 +50,7 @@ const Notices = () => {
       <div className="notice-container">
         <div className="loading-wrapper">
           <div className="spinner"></div>
-          <p className="loading-text">Loading notices...</p>
+          <p className="loading-text">सूचना लोड होत आहेत....</p>
         </div>
       </div>
     );
@@ -72,16 +72,17 @@ const Notices = () => {
       <div className="notice-content">
         {/* HEADER */}
         <div className="notice-header">
-          <h1 className="header-title"> Latest Notice </h1>
+          <h1 className="header-title"> नवीन सूचना </h1>
           <p className="header-subtitle">
-            Stay updated with the latest announcements
+            नवीन घोषणांची माहिती येथे मिळवा
+
           </p>
         </div>
 
         {/* NOTICE LIST */}
         {notices.length === 0 ? (
           <div className="empty-state">
-            <p className="empty-text">No notices available</p>
+            <p className="empty-text">कोणत्याही सूचना उपलब्ध नाहीत</p>
           </div>
         ) : (
           <div className="notice-grid">
@@ -94,7 +95,7 @@ const Notices = () => {
               >
                 {notice.isImportant && (
                   <div className="important-ribbon">
-                    <span>IMPORTANT</span>
+                    <span>महत्वाचे</span>
                   </div>
                 )}
 

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import "./Navbar.css";
 import logo from "../../assets/egram-logo.png";
-import i18n from "i18next";
+
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -12,13 +12,9 @@ const Navbar = () => {
 
   // Prevent body scroll when menu is open
   useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    document.body.style.overflow = menuOpen ? "hidden" : "unset";
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [menuOpen]);
 
@@ -36,33 +32,51 @@ const Navbar = () => {
         <div className="navbar-container">
           <div className="navbar-content">
             <Link to="/" className="navbar-brand">
-              <img src={logo} alt="E Gram Panchayat Logo" className="brand-logo" />
+              <img
+                src={logo}
+                alt="ई-ग्राम पंचायत लोगो"
+                className="brand-logo"
+              />
             </Link>
 
+            {/* DESKTOP MENU */}
             <div className="nav-desktop-menu">
-              <Link to="/">Home</Link>
-              <Link to="/about">About</Link>
-              <Link to="/services">Services</Link>
-              <Link to="/schemes">Schemes</Link>
-              <Link to="/notices">Notices</Link>
-              <Link to="/development">Development</Link>
-              <Link to="/gallery">Gallery</Link>
-              <Link to="/contact">Members</Link>
-              <button onClick={() => i18n.changeLanguage("en")}>English</button>
-<button onClick={() => i18n.changeLanguage("mr")}>मराठी</button>
+              <Link to="/">मुख्यपृष्ठ</Link>
+              <Link to="/about">गावाची माहिती</Link>
+              <Link to="/services">सेवा</Link>
+              <Link to="/schemes">योजना</Link>
+              <Link to="/notices">सूचना</Link>
+              <Link to="/development">विकास कामे</Link>
+              <Link to="/gallery">छायाचित्रे</Link>
+              <Link to="/contact">सदस्य</Link>
 
-              {!user && <Link to="/login" className="login-button">Login</Link>}
+              {!user && (
+                <Link to="/login" className="login-button">
+                  लॉगिन
+                </Link>
+              )}
+
               {user && (
-                <button className="profile-avatar vertical" onClick={() => navigate("/profile")}>
-                  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile" />
+                <button
+                  className="profile-avatar vertical"
+                  onClick={() => navigate("/profile")}
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                    alt="प्रोफाइल"
+                  />
                   <span className="profile-name">{firstName}</span>
                 </button>
               )}
             </div>
 
+            {/* MOBILE TOGGLE */}
             <div className="nav-mobile-button">
-              <button className="nav-toggle-button" onClick={() => setMenuOpen(!menuOpen)}>
-                {menuOpen ? '✕' : '☰'}
+              <button
+                className="nav-toggle-button"
+                onClick={() => setMenuOpen(!menuOpen)}
+              >
+                {menuOpen ? "✕" : "☰"}
               </button>
             </div>
           </div>
@@ -71,33 +85,43 @@ const Navbar = () => {
 
       {menuOpen && <div className="mobile-overlay" onClick={closeMenu} />}
 
+      {/* MOBILE MENU */}
       {menuOpen && (
         <div className="nav-mobile-menu-wrapper">
-          {/* PROFILE SECTION FIRST */}
+          {/* PROFILE FIRST */}
           {user ? (
-            <>
-              <button className="mobile-profile-btn" onClick={() => { navigate("/profile"); closeMenu(); }}>
-                 Welcome {firstName}
-              </button>
-            </>
+            <button
+              className="mobile-profile-btn"
+              onClick={() => {
+                navigate("/profile");
+                closeMenu();
+              }}
+            >
+              स्वागत आहे {firstName}
+            </button>
           ) : (
-            <Link to="/login" onClick={closeMenu}> Login</Link>
+            <Link to="/login" onClick={closeMenu}>
+              लॉगिन
+            </Link>
           )}
 
-          {/* THEN NAV ITEMS */}
-          <Link to="/" onClick={closeMenu}>Home</Link>
-          <Link to="/about" onClick={closeMenu}>About</Link>
-          <Link to="/services" onClick={closeMenu}>Services</Link>
-          <Link to="/schemes" onClick={closeMenu}>Schemes</Link>
-          <Link to="/notices" onClick={closeMenu}>Notices</Link>
-          <Link to="/development" onClick={closeMenu}>Development</Link>
-          <Link to="/gallery" onClick={closeMenu}>Gallery</Link>
-          <Link to="/contact" onClick={closeMenu}>Members</Link>
+          {/* MENU ITEMS */}
+          <Link to="/" onClick={closeMenu}>मुख्यपृष्ठ</Link>
+          <Link to="/about" onClick={closeMenu}>गावाची माहिती</Link>
+          <Link to="/services" onClick={closeMenu}>सेवा</Link>
+          <Link to="/schemes" onClick={closeMenu}>योजना</Link>
+          <Link to="/notices" onClick={closeMenu}>सूचना</Link>
+          <Link to="/development" onClick={closeMenu}>विकास कामे</Link>
+          <Link to="/gallery" onClick={closeMenu}>छायाचित्रे</Link>
+          <Link to="/contact" onClick={closeMenu}>सदस्य</Link>
 
-          {/* LOGOUT AT BOTTOM */}
+          {/* LOGOUT */}
           {user && (
-            <button onClick={handleLogout} className="mobile-logout-button">
-               Logout
+            <button
+              onClick={handleLogout}
+              className="mobile-logout-button"
+            >
+              लॉगआउट
             </button>
           )}
         </div>

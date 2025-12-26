@@ -37,28 +37,36 @@ const ManageServices = () => {
 
   /* ================= CONFIRM ================= */
   const confirmAction = async () => {
-    if (!message.trim()) {
-      alert("Message is required");
-      return;
-    }
+  if (!message.trim()) {
+    alert("Message is required");
+    return;
+  }
 
-    await fetch(`${API}/api/admin/services/${selectedAppId}/status`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        status: modalType, // approved | rejected
-        adminRemark: message,
-      }),
-    });
+  try {
+    await fetch(
+      `${API}/api/admin/services/${selectedAppId}/status`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          status: modalType === "approved" ? "Approved" : "Rejected",
+          adminRemark: message,
+        }),
+      }
+    );
 
     setShowModal(false);
     setSelectedAppId(null);
     setMessage("");
     fetchApplications();
-  };
+  } catch (err) {
+    alert("Failed to update application ❌");
+  }
+};
+
 
   /* ================= FILTER (FIXED) ================= */
   const filteredApps = applications.filter(

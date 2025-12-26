@@ -8,63 +8,61 @@ const Footer = () => {
       <div className="footer-container">
         {/* ABOUT */}
         <div className="footer-section">
-          <h3>Gram Panchayat</h3>
+          <h3>ग्राम पंचायत</h3>
           <p>
-            Gram Panchayat Palshi Digital Portal is a transparent governance
-            platform that provides easy access to citizen services, government
-            schemes, notices, and development updates. It helps villagers apply
-            for services online, stay informed about Panchayat activities, and
-            promotes accountability, efficiency, and digital empowerment in
-            Palshi village.
+            ग्राम पंचायत Gproshankheda डिजिटल पोर्टल हे पारदर्शक प्रशासनाचे व्यासपीठ आहे.
+            या पोर्टलद्वारे नागरिकांना विविध सेवा, शासकीय योजना, सूचना तसेच
+            विकासकामांची माहिती सहज उपलब्ध होते. यामुळे ग्रामस्थांना ऑनलाइन
+            सेवा अर्ज करणे, पंचायत कार्याबाबत माहिती मिळवणे तसेच पाळशी गावात
+            डिजिटल सक्षमीकरण, कार्यक्षमता व जबाबदारी वाढविण्यास मदत होते.
           </p>
         </div>
 
         {/* QUICK LINKS */}
         <div className="footer-section">
-          <h4>Quick Links</h4>
+          <h4>द्रुत दुवे</h4>
           <ul>
             <li>
-              <Link to="/">Home</Link>
+              <Link to="/">मुख्यपृष्ठ</Link>
             </li>
             <li>
-              <Link to="/about">About</Link>
+              <Link to="/about">आमच्याबद्दल</Link>
             </li>
             <li>
-              <Link to="/services">Services</Link>
+              <Link to="/services">सेवा</Link>
             </li>
             <li>
-              <Link to="/schemes">Schemes</Link>
+              <Link to="/schemes">योजना</Link>
             </li>
             <li>
-              <Link to="/notices">Notices</Link>
+              <Link to="/notices">सूचना</Link>
             </li>
           </ul>
         </div>
 
         {/* CONTACT */}
         <div className="footer-section">
-          <h4>Contact</h4>
-          <p>📍 Gram Panchayat Office</p>
-          <p>📞 +91 99988 87777</p>
-          <p>✉️ grampanchayat@gmail.com</p>
+          <h4>संपर्क</h4>
+          <p>📍 ग्राम पंचायत कार्यालय</p>
+          <p>📞 +९१ ९९९८८ ८७७७७</p>
+          <p>✉️ gproshankheda@gmail.com</p>
         </div>
 
         {/* OFFICE INFO */}
         <div className="footer-section">
-          <h4>Office Hours</h4>
-          <p>Mon - Fri: 10 AM - 5 PM</p>
-          <p>Government of India</p>
+          <h4>कार्यालयीन वेळ</h4>
+          <p>सोमवार - शुक्रवार: सकाळी १० ते सायंकाळी ५</p>
+          <p>भारत सरकार</p>
         </div>
       </div>
 
       {/* BOTTOM BAR */}
       <div className="footer-bottom">
         <p>
-          © {new Date().getFullYear()} Digital Gram Panchayat. All Rights
-          Reserved.
+          © {new Date().getFullYear()} डिजिटल ग्राम पंचायत. सर्व हक्क राखीव.
         </p>
         <p>
-          Developed by <span className="dev-name">Jeevan Maher</span>
+          विकसित केले: <span className="dev-name">जीवन महेर</span>
         </p>
       </div>
     </footer>

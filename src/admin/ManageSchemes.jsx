@@ -290,7 +290,7 @@ const ManageSchemes = () => {
               </p>
             )}
 
-            {s.applyLink && (
+            {/* {s.applyLink && (
               <a
                 href={s.applyLink}
                 target="_blank"
@@ -299,7 +299,7 @@ const ManageSchemes = () => {
               >
                 🔗 Apply Here
               </a>
-            )}
+            )} */}
 
             <div className="card-actions">
               <button 

@@ -7,14 +7,12 @@ import "./ApplyService.css";
 const API =
   process.env.REACT_APP_API_URL || "https://backend-9i6n.onrender.com";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+// MAX FILE SIZE = 500 KB
+const MAX_FILE_SIZE = 500 * 1024;
 
 const ApplyService = () => {
   const { token } = useContext(AuthContext);
   const location = useLocation();
-
-  const query = new URLSearchParams(location.search);
-  const selectedService = query.get("service");
 
   const [formData, setFormData] = useState({
     serviceType: "",
@@ -26,87 +24,85 @@ const ApplyService = () => {
   });
 
   const [files, setFiles] = useState({});
+  const [fileErrors, setFileErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const [toast, setToast] = useState({
-    show: false,
-    message: "",
-    type: "",
-  });
-
-  /* ================= PREFILL SERVICE ================= */
+  /* PREFILL SERVICE */
   useEffect(() => {
-    if (selectedService) {
-      setFormData((prev) => ({
-        ...prev,
-        serviceType: selectedService,
-      }));
+    const params = new URLSearchParams(location.search);
+    const serviceFromUrl = params.get("service");
+    if (serviceFromUrl) {
+      setFormData((p) => ({ ...p, serviceType: serviceFromUrl }));
     }
-  }, [selectedService]);
+  }, [location.search]);
 
-  /* ================= TOAST ================= */
-  const showToast = (message, type) => {
-    setToast({ show: true, message, type });
-    setTimeout(() => {
-      setToast({ show: false, message: "", type: "" });
-    }, 2000);
-  };
-
-  /* ================= INPUT ================= */
+  /* INPUT */
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  /* ================= FILE ================= */
+  /* FILE VALIDATION */
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
+    const { name, files: selectedFiles } = e.target;
+    const file = selectedFiles[0];
+    if (!file) return;
 
-    if (file && file.size > MAX_FILE_SIZE) {
-      showToast("File size must be less than 5MB", "error");
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "application/pdf",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      setFileErrors((p) => ({
+        ...p,
+        [name]: "फक्त JPG, PNG किंवा PDF फाईल अपलोड करा",
+      }));
       e.target.value = "";
       return;
     }
 
-    setFiles({ ...files, [e.target.name]: file });
+    if (file.size > MAX_FILE_SIZE) {
+      setFileErrors((p) => ({
+        ...p,
+        [name]: "फाईलचा आकार 500 KB पेक्षा जास्त नसावा",
+      }));
+      e.target.value = "";
+      return;
+    }
+
+    setFileErrors((p) => ({ ...p, [name]: "" }));
+    setFiles((p) => ({ ...p, [name]: file }));
   };
 
-  /* ================= SUBMIT ================= */
+  /* SUBMIT */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     const data = new FormData();
-
-    Object.entries(formData).forEach(([key, value]) => data.append(key, value));
-
-    Object.entries(files).forEach(([key, file]) => data.append(key, file));
+    Object.entries(formData).forEach(([k, v]) => data.append(k, v));
+    Object.entries(files).forEach(([k, f]) => data.append(k, f));
 
     try {
-      const res = await axios.post(`${API}/api/services/apply`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      await axios.post(`${API}/api/services/apply`, data, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      showToast(
-        res.data.message || "Application submitted successfully ✅",
-        "success"
-      );
-
-      setTimeout(() => {
-        setFormData({
-          serviceType: selectedService || "",
-          fullName: "",
-          address: "",
-          mobile: "",
-          deceasedName: "",
-          dateOfDeath: "",
-        });
-        setFiles({});
-      }, 1500);
-    } catch (err) {
-      console.error("Apply service error:", err);
-      showToast(err.response?.data?.message || "Submission failed ❌", "error");
+      alert("अर्ज यशस्वीरीत्या सादर झाला ✅");
+      setFormData({
+        serviceType: "",
+        fullName: "",
+        address: "",
+        mobile: "",
+        deceasedName: "",
+        dateOfDeath: "",
+      });
+      setFiles({});
+      setFileErrors({});
+    } catch {
+      alert("अर्ज सादर होऊ शकला नाही ❌");
     } finally {
       setLoading(false);
     }
@@ -114,144 +110,150 @@ const ApplyService = () => {
 
   return (
     <div className="apply-service-container">
-      <h2>Apply for Service</h2>
-
-      {/* TOAST */}
-      {toast.show && (
-        <div className={`toast ${toast.type}`}>
-          {toast.type === "success" ? "✅" : "❌"} {toast.message}
-        </div>
-      )}
+      <h2>सेवेसाठी अर्ज करा</h2>
 
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         {/* SERVICE */}
-        <label>Service</label>
+        <label>सेवा निवडा</label>
         <select
           name="serviceType"
           value={formData.serviceType}
           onChange={handleChange}
-          disabled={!!selectedService}
           required
         >
-          <option value="">Select Service</option>
-          <option value="Birth Certificate">Birth Certificate</option>
-          <option value="Death Certificate">Death Certificate</option>
-          <option value="Income Certificate">Income Certificate</option>
-          <option value="Residence Certificate">Residence Certificate</option>
+          <option value="">-- सेवा निवडा --</option>
+          <option value="जन्म प्रमाणपत्र">जन्म प्रमाणपत्र</option>
+          <option value="मृत्यू प्रमाणपत्र">मृत्यू प्रमाणपत्र</option>
+          <option value="उत्पन्न प्रमाणपत्र">उत्पन्न प्रमाणपत्र</option>
+          <option value="रहिवासी प्रमाणपत्र">रहिवासी प्रमाणपत्र</option>
+          <option value="विवाह प्रमाणपत्र">विवाह प्रमाणपत्र</option>
         </select>
 
         {/* APPLICANT */}
-        <h4>Applicant Details</h4>
+        <h4>अर्जदाराची माहिती</h4>
         <input
           name="fullName"
-          placeholder="Full Name"
-          value={formData.fullName}
-          onChange={handleChange}
+          placeholder="पूर्ण नाव"
           required
+          onChange={handleChange}
         />
         <input
           name="address"
-          placeholder="Address"
-          value={formData.address}
-          onChange={handleChange}
+          placeholder="पत्ता"
           required
+          onChange={handleChange}
         />
         <input
           name="mobile"
-          placeholder="Mobile Number"
-          value={formData.mobile}
-          onChange={handleChange}
+          placeholder="मोबाईल क्रमांक"
           required
+          onChange={handleChange}
         />
 
-        {/* ================= BIRTH ================= */}
-        {formData.serviceType === "Birth Certificate" && (
+        {/* ================= जन्म प्रमाणपत्र ================= */}
+        {formData.serviceType === "जन्म प्रमाणपत्र" && (
           <>
-            <h4>Required Documents</h4>
+            <h4>आवश्यक कागदपत्रे</h4>
+
+            <label>🏥 रुग्णालयाची पावती</label>
             <input
               type="file"
               name="hospitalSlip"
               onChange={handleFileChange}
               required
             />
+            {fileErrors.hospitalSlip && (
+              <p className="file-error">{fileErrors.hospitalSlip}</p>
+            )}
+
+            <label>🆔 पालकांचे आधार कार्ड</label>
             <input
               type="file"
               name="parentsAadhaar"
               onChange={handleFileChange}
               required
             />
+            {fileErrors.parentsAadhaar && (
+              <p className="file-error">{fileErrors.parentsAadhaar}</p>
+            )}
+
+            <label>🏠 पत्ता पुरावा</label>
             <input
               type="file"
               name="addressProof"
               onChange={handleFileChange}
               required
             />
+            {fileErrors.addressProof && (
+              <p className="file-error">{fileErrors.addressProof}</p>
+            )}
           </>
         )}
 
-        {/* ================= DEATH ================= */}
-        {formData.serviceType === "Death Certificate" && (
+        {/* ================= मृत्यू प्रमाणपत्र ================= */}
+        {formData.serviceType === "मृत्यू प्रमाणपत्र" && (
           <>
-            <h4>Deceased Details</h4>
+            <h4>👤 मृत व्यक्तीची माहिती</h4>
             <input
               name="deceasedName"
-              placeholder="Deceased Name"
-              value={formData.deceasedName}
-              onChange={handleChange}
+              placeholder="मृत व्यक्तीचे नाव"
               required
+              onChange={handleChange}
             />
             <input
               type="date"
               name="dateOfDeath"
-              value={formData.dateOfDeath}
-              onChange={handleChange}
               required
+              onChange={handleChange}
             />
 
-            <h4>Required Documents</h4>
+            <h4>आवश्यक कागदपत्रे</h4>
+            <label>मृत्यू प्रमाणपत्र / रुग्णालयाची पावती</label>
             <input
               type="file"
-              name="hospitalDeathSlip"
+              name="deathSlip"
               onChange={handleFileChange}
               required
             />
+            <label>मृत व्यक्तीचे आधार कार्ड</label>
             <input
               type="file"
               name="deceasedAadhaar"
               onChange={handleFileChange}
               required
             />
+            <label>अर्जदाराचे आधार कार्ड</label>
             <input
               type="file"
               name="applicantAadhaar"
               onChange={handleFileChange}
               required
             />
-            <input
-              type="file"
-              name="addressProof"
-              onChange={handleFileChange}
-              required
-            />
           </>
         )}
 
-        {/* ================= INCOME ================= */}
-        {formData.serviceType === "Income Certificate" && (
+        {/* ================= उत्पन्न प्रमाणपत्र ================= */}
+        {formData.serviceType === "उत्पन्न प्रमाणपत्र" && (
           <>
-            <h4>Required Documents</h4>
+            <h4> आवश्यक कागदपत्रे</h4>
+            <label>🆔 अर्जदाराचे आधार कार्ड 👉 स्वतःचा आधार कार्ड </label>
             <input
               type="file"
               name="aadhaar"
               onChange={handleFileChange}
               required
             />
+            <label>🍚 रेशन कार्ड 👉 कुटुंबाचे रेशन कार्ड</label>
             <input
               type="file"
               name="rationCard"
               onChange={handleFileChange}
               required
             />
+            <label>
+              उत्पन्नाचा पुरावा 👉 पगार स्लिप / शेती उत्पन्न दाखला / स्वघोषणा
+              पत्र
+            </label>
             <input
               type="file"
               name="incomeProof"
@@ -261,22 +263,25 @@ const ApplyService = () => {
           </>
         )}
 
-        {/* ================= RESIDENCE ================= */}
-        {formData.serviceType === "Residence Certificate" && (
+        {/* ================= रहिवासी प्रमाणपत्र ================= */}
+        {formData.serviceType === "रहिवासी प्रमाणपत्र" && (
           <>
-            <h4>Required Documents</h4>
+            <h4>आवश्यक कागदपत्रे</h4>
+            <label>🆔 अर्जदाराचे आधार कार्ड 👉 पत्ता असलेले आधार कार्ड </label>
             <input
               type="file"
               name="aadhaar"
               onChange={handleFileChange}
               required
             />
+            <label>⚡ वीज बिल 👉 मागील 3 महिन्यांतील लाईट बिल</label>
             <input
               type="file"
               name="electricityBill"
               onChange={handleFileChange}
               required
             />
+            <label>🍚 रेशन कार्ड 👉 सध्याच्या पत्त्याचे रेशन कार्ड</label>
             <input
               type="file"
               name="rationCard"
@@ -286,25 +291,74 @@ const ApplyService = () => {
           </>
         )}
 
-        {/* SUBMIT */}
-        <button type="submit" disabled={loading}>
-          {loading ? (
-            <span className="btn-loader"></span>
-          ) : (
-            "Submit Application"
-          )}
-        </button>
-        {/* CENTER SUCCESS / ERROR POPUP */}
-        {toast.show && (
-          <div className="popup-overlay">
-            <div className={`popup ${toast.type}`}>
-              <div className="popup-icon">
-                {toast.type === "success" ? "✅" : "❌"}
-              </div>
-              <p className="popup-message">{toast.message}</p>
-            </div>
-          </div>
+        {/* ================= विवाह प्रमाणपत्र ================= */}
+        {formData.serviceType === "विवाह प्रमाणपत्र" && (
+          <>
+            <h4> आवश्यक कागदपत्रे</h4>
+            <label>🆔 वराचे आधार कार्ड 👉 नवऱ्याचे आधार कार्ड</label>
+            <input
+              type="file"
+              name="brideGroomAadhaar"
+              onChange={handleFileChange}
+              required
+            />
+            <label>🆔 वधूचे आधार कार्ड 👉 नवरीचे आधार कार्ड</label>
+            <input
+              type="file"
+              name="brideAadhaar"
+              onChange={handleFileChange}
+              required
+            />
+            <label>
+              {" "}
+              कार्ड 📅वयाचा पुरावा 👉 जन्म प्रमाणपत्र / शाळेचा दाखला / बोनाफाईड
+            </label>
+            <input
+              type="file"
+              name="ageProof"
+              onChange={handleFileChange}
+              required
+            />
+            <label>🏠 पत्ता पुरावा 👉 लाईट बिल / रेशन कार्ड</label>
+            <input
+              type="file"
+              name="marriagePhoto"
+              onChange={handleFileChange}
+              required
+            />
+            <label>💍 विवाह समारंभाचे छायाचित्र 👉 लग्नाच्या वेळचा फोटो</label>
+            <input
+              type="file"
+              name="witnessAadhaar"
+              onChange={handleFileChange}
+              required
+            />
+            <label>
+              📜 लग्न पत्रिका / विवाह नोंद पुरावा 👉 लग्न पत्रिका किंवा मंदिर /
+              रजिस्टर पुरावा
+            </label>
+            <input
+              type="file"
+              name="witnessAadhaar"
+              onChange={handleFileChange}
+              required
+            />
+            <label>
+              👥 दोन साक्षीदारांचे आधार कार्ड 👉 दोन वेगवेगळ्या साक्षीदारांचे
+              आधार
+            </label>
+            <input
+              type="file"
+              name="witnessAadhaar"
+              onChange={handleFileChange}
+              required
+            />
+          </>
         )}
+
+        <button type="submit" disabled={loading}>
+          {loading ? "सादर होत आहे..." : "अर्ज सादर करा"}
+        </button>
       </form>
     </div>
   );

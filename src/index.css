@@ -3,3 +3,52 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   background-color: #f4f6f8;
 }
+
+/* 🔥 Hide Google Translate top bar */
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+/* Hide translate tooltip */
+.goog-tooltip {
+  display: none !important;
+}
+
+.goog-tooltip:hover {
+  display: none !important;
+}
+/* 🔥 FORCE HIDE GOOGLE TRANSLATE BAR */
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+.goog-te-gadget-icon {
+  display: none !important;
+}
+
+.goog-tooltip {
+  display: none !important;
+}
+
+.goog-tooltip:hover {
+  display: none !important;
+}
+
+/* 🔥 PREVENT PAGE FROM MOVING DOWN */
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
+/* 🔥 REMOVE EXTRA SPACE ADDED BY GOOGLE */
+html {
+  margin-top: 0 !important;
+}

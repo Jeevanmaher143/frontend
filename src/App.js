@@ -5,6 +5,7 @@ import Footer from "./components/common/Footer";
 import Navbar from "./components/common/Navbar";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
+
 function App() {
   const location = useLocation();
 

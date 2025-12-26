@@ -5,51 +5,51 @@ import "./Services.css";
 const Services = () => {
   const navigate = useNavigate();
 
-  // STATIC SERVICES DATA (can be DB later)
+  // स्थिर सेवा माहिती (नंतर DB मधून घेता येईल)
   const services = [
     {
       id: 1,
-      title: "Birth Certificate",
-     
+      title: "जन्म प्रमाणपत्र",
       description:
-        "Apply for official birth certificate issued by Gram Panchayat.",
-      documents: ["Hospital slip", "Parents Aadhaar", "Address proof"],
+        "ग्राम पंचायत कडून दिले जाणारे अधिकृत जन्म प्रमाणपत्र मिळवण्यासाठी अर्ज करा.",
+      documents: ["रुग्णालयाची पावती", "पालकांचे आधार कार्ड", "पत्ता पुरावा"],
     },
     {
       id: 2,
-      title: "Death Certificate",
-     
-      description: "Apply for death certificate for official records.",
-      documents: ["Hospital slip", "Aadhaar of deceased", "Applicant ID"],
+      title: "मृत्यू प्रमाणपत्र",
+      description:
+        "अधिकृत नोंदींसाठी मृत्यू प्रमाणपत्र मिळवण्यासाठी अर्ज करा.",
+      documents: ["रुग्णालयाची पावती", "मृत व्यक्तीचे आधार कार्ड", "अर्जदाराचा ओळखपत्र"],
     },
     {
       id: 3,
-      title: "Income Certificate",
-      
-      description: "Certificate for income proof for schemes & education.",
-      documents: ["Aadhaar card", "Ration card", "Income proof"],
+      title: "उत्पन्न प्रमाणपत्र",
+      description:
+        "शासकीय योजना व शिक्षणासाठी उत्पन्नाचा पुरावा म्हणून प्रमाणपत्र.",
+      documents: ["आधार कार्ड", "रेशन कार्ड", "उत्पन्नाचा पुरावा"],
     },
     {
       id: 4,
-      title: "Residence Certificate",
-      
-      description: "Proof of residence for government services.",
-      documents: ["Aadhaar card", "Electricity bill", "Ration card"],
+      title: "रहिवासी प्रमाणपत्र",
+      description:
+        "शासकीय सेवांसाठी रहिवासाचा पुरावा म्हणून प्रमाणपत्र.",
+      documents: ["आधार कार्ड", "वीज बिल", "रेशन कार्ड"],
     },
     {
       id: 6,
-      title: "Marriage Certificate",
-      description: "Legal marriage registration certificate.",
-      documents: ["Age proof", "Address proof", "Marriage invitation", "Photos"],
+      title: "विवाह प्रमाणपत्र",
+      description:
+        "कायदेशीर विवाह नोंदणीसाठी विवाह प्रमाणपत्र.",
+      documents: ["वयाचा पुरावा", "पत्ता पुरावा", "लग्न पत्रिका", "छायाचित्रे"],
     },
   ];
 
   return (
     <div className="services-page">
       <div className="services-header">
-        <h2 className="services-title">Gram Panchayat Services</h2>
+        <h2 className="services-title">ग्राम पंचायत सेवा</h2>
         <p className="services-subtitle">
-          Apply for various certificates and services online
+          विविध प्रमाणपत्रे व सेवांसाठी ऑनलाइन अर्ज करा
         </p>
       </div>
 
@@ -57,12 +57,12 @@ const Services = () => {
         {services.map((service) => (
           <div className="service-card" key={service.id}>
             <div className="service-icon">{service.icon}</div>
-            
+
             <h3>{service.title}</h3>
             <p className="desc">{service.description}</p>
 
             <div className="docs">
-              <h4>Required Documents</h4>
+              <h4>आवश्यक कागदपत्रे</h4>
               <ul>
                 {service.documents.map((doc, index) => (
                   <li key={index}>
@@ -80,7 +80,7 @@ const Services = () => {
                 )
               }
             >
-              Apply Now
+              अर्ज करा
             </button>
           </div>
         ))}

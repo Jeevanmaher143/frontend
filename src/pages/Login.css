@@ -91,6 +91,11 @@ form {
   color: #90a4ae;
 }
 
+.input-group input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* SUBMIT BUTTON */
 .submit-btn {
   padding: 10px;
@@ -104,16 +109,47 @@ form {
   transition: all 0.3s ease;
   margin-top: 5px;
   box-shadow: 0 4px 12px rgba(0, 172, 193, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
 }
 
-.submit-btn:hover {
+.submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 172, 193, 0.35);
   background: linear-gradient(135deg, #0097a7 0%, #00838f 100%);
 }
 
-.submit-btn:active {
+.submit-btn:active:not(:disabled) {
   transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* LOADER SPINNER */
+.loader {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loader-text {
+  font-size: 15px;
 }
 
 /* AUTH FOOTER */
@@ -168,6 +204,15 @@ form {
     padding: 14px;
     font-size: 15px;
   }
+
+  .loader {
+    width: 15px;
+    height: 15px;
+  }
+
+  .loader-text {
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -208,6 +253,15 @@ form {
   .submit-btn {
     padding: 13px;
     font-size: 14px;
+  }
+
+  .loader {
+    width: 14px;
+    height: 14px;
+  }
+
+  .loader-text {
+    font-size: 13px;
   }
 
   .auth-footer {

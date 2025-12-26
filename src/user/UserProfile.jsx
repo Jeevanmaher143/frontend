@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./UserProfile.css";
 
-/* ✅ BACKEND URL (LOCAL + DEPLOY SAFE) */
+/* ✅ BACKEND URL */
 const API =
   process.env.REACT_APP_API_URL ||
   "https://backend-9i6n.onrender.com";
@@ -16,23 +16,20 @@ const UserProfile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  /* ================= FETCH PROFILE ================= */
   const fetchProfile = async () => {
     try {
       setLoading(true);
 
-      const res = await axios.get(
-        `${API}/api/user/profile`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axios.get(`${API}/api/user/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setProfile(res.data);
     } catch (err) {
       console.error("Profile fetch error:", err);
-
       if (err.response?.status === 401) {
         logout();
         navigate("/login");
@@ -43,9 +40,7 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
-    if (token) {
-      fetchProfile();
-    }
+    if (token) fetchProfile();
   }, [token]);
 
   /* ================= LOADING ================= */
@@ -55,13 +50,13 @@ const UserProfile = () => {
 
   if (!profile) return null;
 
-  const { user, services } = profile;
+  const { user, services = [] } = profile;
 
   return (
     <div className="profile-container">
       <h2>👤 User Profile</h2>
 
-      {/* USER INFO */}
+      {/* ================= USER INFO ================= */}
       <div className="profile-card">
         <p><b>Name:</b> {user.fullName}</p>
         <p><b>Email:</b> {user.email || "N/A"}</p>
@@ -86,38 +81,54 @@ const UserProfile = () => {
         </button>
       </div>
 
-      {/* USER APPLICATIONS */}
+      {/* ================= USER APPLICATIONS ================= */}
       <h3>📄 Your Applications</h3>
 
       {services.length === 0 ? (
         <p className="no-data">No applications submitted yet</p>
       ) : (
         <div className="applications-list">
-          {services.map((s) => (
-            <div key={s._id} className="application-card">
-              <p><b>Service:</b> {s.serviceType}</p>
+          {services.map((s) => {
+            const statusLower = s.status?.toLowerCase();
 
-              <p>
-                <b>Status:</b>{" "}
-                <span className={`status ${s.status.toLowerCase()}`}>
-                  {s.status}
-                </span>
-              </p>
+            return (
+              <div key={s._id} className="application-card">
+                <p><b>Service:</b> {s.serviceType}</p>
 
-              {s.createdAt && (
                 <p>
-                  <b>Applied On:</b>{" "}
-                  {new Date(s.createdAt).toLocaleDateString()}
+                  <b>Status:</b>{" "}
+                  <span className={`status ${statusLower}`}>
+                    {s.status}
+                  </span>
                 </p>
-              )}
 
-              {s.status === "Rejected" && s.adminRemark && (
-                <p className="reject-reason">
-                  <b>Reason:</b> {s.adminRemark}
-                </p>
-              )}
-            </div>
-          ))}
+                {s.createdAt && (
+                  <p>
+                    <b>Applied On:</b>{" "}
+                    {new Date(s.createdAt).toLocaleDateString()}
+                  </p>
+                )}
+
+                {/* ✅ ADMIN MESSAGE FOR BOTH APPROVED & REJECTED */}
+                {s.adminRemark && (
+                  <p
+                    className={
+                      s.status === "Approved"
+                        ? "approve-message"
+                        : "reject-reason"
+                    }
+                  >
+                    <b>
+                      {s.status === "Approved"
+                        ? "Message:"
+                        : "Reason:"}
+                    </b>{" "}
+                    {s.adminRemark}
+                  </p>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

@@ -5,7 +5,6 @@ const API =
   process.env.REACT_APP_API_URL ||
   "https://backend-9i6n.onrender.com";
 
-
 const Development = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,8 +21,8 @@ const Development = () => {
         const data = await res.json();
         setProjects(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error("Error fetching development:", err);
-        setError("Unable to load development projects");
+        console.error("विकासकामे मिळवताना त्रुटी आली:", err);
+        setError("विकास प्रकल्प लोड करता आले नाहीत");
       } finally {
         setLoading(false);
       }
@@ -60,7 +59,7 @@ const Development = () => {
       <div className="dev-container">
         <div className="dev-loading">
           <div className="spinner"></div>
-          <p>Loading development projects...</p>
+          <p>विकास प्रकल्प लोड होत आहेत...</p>
         </div>
       </div>
     );
@@ -83,16 +82,16 @@ const Development = () => {
 
         {/* HEADER */}
         <div className="dev-header">
-          <h1 className="dev-title">Village Development</h1>
+          <h1 className="dev-title">गाव विकास कामे</h1>
           <p className="dev-subtitle">
-            Track progress of ongoing development projects
+            चालू असलेल्या व पूर्ण झालेल्या विकास प्रकल्पांची माहिती
           </p>
 
           {/* STATS */}
           <div className="dev-stats">
             <div className="stat-card">
               <h3>{projects.length}</h3>
-              <p>Total Projects</p>
+              <p>एकूण प्रकल्प</p>
             </div>
 
             <div className="stat-card">
@@ -105,7 +104,7 @@ const Development = () => {
                   ).length
                 }
               </h3>
-              <p>In Progress</p>
+              <p>प्रगतीपथावर</p>
             </div>
 
             <div className="stat-card">
@@ -116,7 +115,7 @@ const Development = () => {
                   ).length
                 }
               </h3>
-              <p>Completed</p>
+              <p>पूर्ण झालेले</p>
             </div>
           </div>
 
@@ -126,44 +125,53 @@ const Development = () => {
               className={filter === "all" ? "filter-btn active" : "filter-btn"}
               onClick={() => setFilter("all")}
             >
-              All
+              सर्व
             </button>
 
             <button
               className={filter === "ongoing" ? "filter-btn active" : "filter-btn"}
               onClick={() => setFilter("ongoing")}
             >
-              In Progress
+              प्रगतीपथावर
             </button>
 
             <button
               className={filter === "completed" ? "filter-btn active" : "filter-btn"}
               onClick={() => setFilter("completed")}
             >
-              Completed
+              पूर्ण झालेले
             </button>
           </div>
         </div>
 
         {/* PROJECTS */}
         {filteredProjects.length === 0 ? (
-          <p className="no-data">No projects available</p>
+          <p className="no-data">कोणतेही विकास प्रकल्प उपलब्ध नाहीत</p>
         ) : (
           <div className="dev-grid">
             {filteredProjects.map((project) => (
               <div className="dev-card" key={project._id}>
                 <div className="card-header">
                   <h3>{project.projectName}</h3>
-                  <span className={`status-badge ${getStatusColor(project.status)}`}>
-                    {project.status}
+                  <span
+                    className={`status-badge ${getStatusColor(project.status)}`}
+                  >
+                    {project.status === "completed"
+                      ? "पूर्ण"
+                      : project.status === "ongoing" ||
+                        project.status === "in-progress"
+                      ? "प्रगतीपथावर"
+                      : "नियोजित"}
                   </span>
                 </div>
 
-                <p className="project-description">{project.description}</p>
+                <p className="project-description">
+                  {project.description}
+                </p>
 
                 <div className="progress-section">
                   <div className="progress-header">
-                    <span>Progress</span>
+                    <span>प्रगती</span>
                     <span>{project.progress}%</span>
                   </div>
 
@@ -176,16 +184,16 @@ const Development = () => {
                 </div>
 
                 <p className="funds-used">
-                  <b>Funds Used:</b> ₹
+                  <b>वापरलेला निधी:</b> ₹
                   {project.fundsUsed
                     ? project.fundsUsed.toLocaleString()
-                    : "N/A"}
+                    : "माहिती उपलब्ध नाही"}
                 </p>
 
-                {/* IMAGES (Cloudinary ready) */}
+                {/* IMAGES */}
                 {project.images?.length > 0 && (
                   <div className="dev-images">
-                    <h4>Project Photos</h4>
+                    <h4>प्रकल्पाचे फोटो</h4>
                     <div className="images-grid">
                       {project.images.map((img, i) => (
                         <img

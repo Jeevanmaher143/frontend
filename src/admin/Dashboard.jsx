@@ -11,9 +11,9 @@ const Dashboard = () => {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good Morning";
-    if (hour < 18) return "Good Afternoon";
-    return "Good Evening";
+    if (hour < 12) return "सुप्रभात";
+    if (hour < 18) return "नमस्कार";
+    return "शुभ संध्या";
   };
 
   const fetchDashboardData = async () => {
@@ -24,7 +24,7 @@ const Dashboard = () => {
         noticesRes,
         servicesRes,
         schemesRes,
-        complaintsRes
+        membersRes
       ] = await Promise.all([
         axios.get(`${API_BASE}/api/notices`),
         axios.get(`${API_BASE}/api/admin/services`),
@@ -33,16 +33,16 @@ const Dashboard = () => {
       ]);
 
       setStats([
-        { label: "Total Notices", value: noticesRes.data.length },
-        { label: "Active Services", value: servicesRes.data.length },
-        { label: "Schemes", value: schemesRes.data.length },
-        { label: "Members", value: complaintsRes.data.length }
+        { label: "एकूण सूचना", value: noticesRes.data.length },
+      //  { label: "सेवा अर्ज", value: servicesRes.data.length },
+        { label: "शासकीय योजना", value: schemesRes.data.length },
+        { label: "सदस्य", value: membersRes.data.length }
       ]);
 
       const activities = noticesRes.data
         .slice(0, 5)
         .map(n => ({
-          action: `Notice added: ${n.title}`,
+          action: `सूचना जोडली: ${n.title}`,
           time: new Date(n.createdAt).toLocaleString(),
           type: "notice"
         }));
@@ -64,7 +64,7 @@ const Dashboard = () => {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
-        <p className="loading-text">Loading dashboard...</p>
+        <p className="loading-text">डॅशबोर्ड लोड होत आहे...</p>
       </div>
     );
   }
@@ -74,10 +74,10 @@ const Dashboard = () => {
       <div className="welcome-card">
         <div className="welcome-content">
           <h1 className="welcome-title">
-            {getGreeting()}, Administrator
+            {getGreeting()}, प्रशासक
           </h1>
           <p className="welcome-subtitle">
-            Welcome back to your Gram Panchayat Admin Dashboard
+            ग्राम पंचायत प्रशासन डॅशबोर्डमध्ये आपले स्वागत आहे
           </p>
         </div>
       </div>
@@ -95,12 +95,12 @@ const Dashboard = () => {
 
       <div className="dashboard-card">
         <div className="card-header">
-          <h2 className="card-title">Recent Activities</h2>
+          <h2 className="card-title">अलीकडील घडामोडी</h2>
         </div>
 
         {recentActivities.length === 0 ? (
           <div className="empty-state">
-            <p>No recent activity</p>
+            <p>कोणतीही अलीकडील माहिती उपलब्ध नाही</p>
           </div>
         ) : (
           <div className="activities-list">

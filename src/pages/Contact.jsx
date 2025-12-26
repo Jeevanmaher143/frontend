@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Contact.css";
 
 //const API = process.env.REACT_APP_API_URL;
-const API ="https://backend-9i6n.onrender.com";
-
+const API = "https://backend-9i6n.onrender.com";
 
 const Contact = () => {
   const [members, setMembers] = useState([]);
@@ -14,22 +13,22 @@ const Contact = () => {
     const fetchContacts = async () => {
       try {
         if (!API) {
-          throw new Error("API URL not configured");
+          throw new Error("API URL उपलब्ध नाही");
         }
 
         const res = await fetch(`${API}/api/contacts`);
         const text = await res.text();
 
-        // 🛑 Backend must return JSON, not HTML
+        // 🛑 Backend ने JSONच परत करणे आवश्यक आहे
         if (text.startsWith("<")) {
-          throw new Error("HTML response received instead of JSON");
+          throw new Error("JSON ऐवजी HTML प्रतिसाद प्राप्त झाला");
         }
 
         const data = JSON.parse(text);
         setMembers(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error("Contact fetch error:", err);
-        setError("Unable to load contacts");
+        console.error("संपर्क माहिती मिळवताना त्रुटी:", err);
+        setError("संपर्क माहिती लोड करता आली नाही");
       } finally {
         setLoading(false);
       }
@@ -44,7 +43,7 @@ const Contact = () => {
       <div className="contact-page">
         <div className="loading-container">
           <div className="spinner"></div>
-          <p>Loading contact details...</p>
+          <p>संपर्क माहिती लोड होत आहे...</p>
         </div>
       </div>
     );
@@ -62,8 +61,8 @@ const Contact = () => {
   return (
     <div className="contact-page">
       <div className="contact-header">
-        <h1>Gram Panchayat Contact Directory</h1>
-        <p>Connect with our dedicated team members</p>
+        <h1>ग्राम पंचायत संपर्क निर्देशिका</h1>
+        <p>आमच्या समर्पित कार्यसंघ सदस्यांशी संपर्क साधा</p>
       </div>
 
       <div className="contact-grid">
@@ -92,11 +91,11 @@ const Contact = () => {
               <h3>{m.name}</h3>
               <p className="role">{m.role}</p>
 
-              {m.phone && (
+              {/* {m.phone && (
                 <a href={`tel:${m.phone}`} className="phone">
                   📞 {m.phone}
                 </a>
-              )}
+              )} */}
 
               {m.email && (
                 <a href={`mailto:${m.email}`} className="email">
@@ -109,7 +108,7 @@ const Contact = () => {
       </div>
 
       {members.length === 0 && (
-        <p className="empty-state">No contacts available</p>
+        <p className="empty-state">कोणतीही संपर्क माहिती उपलब्ध नाही</p>
       )}
     </div>
   );
