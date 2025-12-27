@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./ManageDevelopment.css";
 
-const API_URL = process.env.REACT_APP_API_URL; // ✅ IMPORTANT
+const API_URL = process.env.REACT_APP_API_URL ||
+  "https://backend-9i6n.onrender.com";
+//process.env.REACT_APP_API_URL; // ✅ IMPORTANT
 
 const ManageDevelopment = () => {
   const [projects, setProjects] = useState([]);

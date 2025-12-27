@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Dashboard.css";
 
-const API_BASE = process.env.REACT_APP_API_BASE_URL;
+const API_BASE =
+  process.env.REACT_APP_API_URL || "https://backend-9i6n.onrender.com";
 
 const Dashboard = () => {
   const [stats, setStats] = useState([]);
   const [recentActivities, setRecentActivities] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const token = localStorage.getItem("token"); // ✅ ADMIN TOKEN
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -20,37 +23,48 @@ const Dashboard = () => {
     try {
       setLoading(true);
 
-      const [
-        noticesRes,
-        servicesRes,
-        schemesRes,
-        membersRes
-      ] = await Promise.all([
-        axios.get(`${API_BASE}/api/notices`),
-        axios.get(`${API_BASE}/api/admin/services`),
-        axios.get(`${API_BASE}/api/schemes`),
-        axios.get(`${API_BASE}/api/contacts`)
-      ]);
+      // ✅ PUBLIC APIs
+      const noticesRes = await axios.get(`${API_BASE}/api/notices`);
+      const schemesRes = await axios.get(`${API_BASE}/api/schemes`);
+      const membersRes = await axios.get(`${API_BASE}/api/contacts`);
+      const devlopmentcount = await axios.get(`${API_BASE}/api/development`);
 
+      // ✅ ADMIN API (WITH TOKEN)
+      let servicesCount = 0;
+      try {
+        const servicesRes = await axios.get(
+          `${API_BASE}/api/admin/services`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        servicesCount = servicesRes.data.length;
+      } catch (err) {
+        console.warn("Admin services access denied");
+      }
+
+      // ✅ SET STATS
       setStats([
         { label: "एकूण सूचना", value: noticesRes.data.length },
-      //  { label: "सेवा अर्ज", value: servicesRes.data.length },
+        {label : "विकास कामे ", value:devlopmentcount.data.length},
         { label: "शासकीय योजना", value: schemesRes.data.length },
-        { label: "सदस्य", value: membersRes.data.length }
+        { label: "सदस्य", value: membersRes.data.length },
+        { label: "सेवा अर्ज", value: servicesCount },
       ]);
 
+      // ✅ RECENT ACTIVITIES
       const activities = noticesRes.data
         .slice(0, 5)
-        .map(n => ({
+        .map((n) => ({
           action: `सूचना जोडली: ${n.title}`,
           time: new Date(n.createdAt).toLocaleString(),
-          type: "notice"
         }));
 
       setRecentActivities(activities);
-
     } catch (error) {
-      console.error("Dashboard fetch error:", error);
+      console.error("Dashboard fetch error:", error.message);
     } finally {
       setLoading(false);
     }
@@ -60,6 +74,7 @@ const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
+  /* ================= LOADING ================= */
   if (loading) {
     return (
       <div className="loading-container">
@@ -71,6 +86,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
+      {/* WELCOME */}
       <div className="welcome-card">
         <div className="welcome-content">
           <h1 className="welcome-title">
@@ -82,6 +98,7 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* STATS */}
       <div className="stats-grid">
         {stats.map((stat, index) => (
           <div key={index} className="stat-card">
@@ -93,6 +110,7 @@ const Dashboard = () => {
         ))}
       </div>
 
+      {/* RECENT ACTIVITIES */}
       <div className="dashboard-card">
         <div className="card-header">
           <h2 className="card-title">अलीकडील घडामोडी</h2>
@@ -107,8 +125,12 @@ const Dashboard = () => {
             {recentActivities.map((activity, index) => (
               <div key={index} className="activity-item">
                 <div className="activity-content">
-                  <p className="activity-action">{activity.action}</p>
-                  <span className="activity-time">{activity.time}</span>
+                  <p className="activity-action">
+                    {activity.action}
+                  </p>
+                  <span className="activity-time">
+                    {activity.time}
+                  </span>
                 </div>
               </div>
             ))}
