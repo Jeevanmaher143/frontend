@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import "./Navbar.css";
 import logo from "../../assets/egram-logo.png";
@@ -7,6 +7,7 @@ import logo from "../../assets/egram-logo.png";
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const firstName = user?.fullName?.split(" ")[0];
 
@@ -26,6 +27,11 @@ const Navbar = () => {
 
   const closeMenu = () => setMenuOpen(false);
 
+  // Helper function to check if link is active
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
+
   return (
     <>
       <nav className="navbar">
@@ -41,18 +47,58 @@ const Navbar = () => {
 
             {/* DESKTOP MENU */}
             <div className="nav-desktop-menu">
-              <Link to="/">मुख्यपृष्ठ</Link>
-              <Link to="/about">गावाची माहिती</Link>
-              <Link to="/services">सेवा</Link>
-              <Link to="/schemes">योजना</Link>
-              <Link to="/notices">सूचना</Link>
-              <Link to="/development">विकास कामे</Link>
-              <Link to="/gallery">छायाचित्रे</Link>
-              <Link to="/contact">सदस्य</Link>
+              <Link 
+                to="/" 
+                className={isActive("/") ? "active" : ""}
+              >
+                मुख्यपृष्ठ
+              </Link>
+              <Link 
+                to="/about" 
+                className={isActive("/about") ? "active" : ""}
+              >
+                गावाची माहिती
+              </Link>
+              <Link 
+                to="/services" 
+                className={isActive("/services") ? "active" : ""}
+              >
+                सेवा
+              </Link>
+              <Link 
+                to="/schemes" 
+                className={isActive("/schemes") ? "active" : ""}
+              >
+                योजना
+              </Link>
+              <Link 
+                to="/notices" 
+                className={isActive("/notices") ? "active" : ""}
+              >
+                सूचना
+              </Link>
+              <Link 
+                to="/development" 
+                className={isActive("/development") ? "active" : ""}
+              >
+                विकास कामे
+              </Link>
+              <Link 
+                to="/gallery" 
+                className={isActive("/gallery") ? "active" : ""}
+              >
+                छायाचित्रे
+              </Link>
+              <Link 
+                to="/contact" 
+                className={isActive("/contact") ? "active" : ""}
+              >
+                सदस्य
+              </Link>
 
               {!user && (
                 <Link to="/login" className="login-button">
-                  लॉगिन
+                  <span>लॉगिन</span>
                 </Link>
               )}
 
@@ -75,6 +121,7 @@ const Navbar = () => {
               <button
                 className="nav-toggle-button"
                 onClick={() => setMenuOpen(!menuOpen)}
+                aria-label={menuOpen ? "बंद करा" : "मेनू उघडा"}
               >
                 {menuOpen ? "✕" : "☰"}
               </button>
@@ -100,20 +147,72 @@ const Navbar = () => {
               स्वागत आहे {firstName}
             </button>
           ) : (
-            <Link to="/login" onClick={closeMenu}>
+            <Link 
+              to="/login" 
+              onClick={closeMenu}
+              className={isActive("/login") ? "active" : ""}
+            >
               लॉगिन
             </Link>
           )}
 
           {/* MENU ITEMS */}
-          <Link to="/" onClick={closeMenu}>मुख्यपृष्ठ</Link>
-          <Link to="/about" onClick={closeMenu}>गावाची माहिती</Link>
-          <Link to="/services" onClick={closeMenu}>सेवा</Link>
-          <Link to="/schemes" onClick={closeMenu}>योजना</Link>
-          <Link to="/notices" onClick={closeMenu}>सूचना</Link>
-          <Link to="/development" onClick={closeMenu}>विकास कामे</Link>
-          <Link to="/gallery" onClick={closeMenu}>छायाचित्रे</Link>
-          <Link to="/contact" onClick={closeMenu}>सदस्य</Link>
+          <Link 
+            to="/" 
+            onClick={closeMenu}
+            className={isActive("/") ? "active" : ""}
+          >
+            मुख्यपृष्ठ
+          </Link>
+          <Link 
+            to="/about" 
+            onClick={closeMenu}
+            className={isActive("/about") ? "active" : ""}
+          >
+            गावाची माहिती
+          </Link>
+          <Link 
+            to="/services" 
+            onClick={closeMenu}
+            className={isActive("/services") ? "active" : ""}
+          >
+            सेवा
+          </Link>
+          <Link 
+            to="/schemes" 
+            onClick={closeMenu}
+            className={isActive("/schemes") ? "active" : ""}
+          >
+            योजना
+          </Link>
+          <Link 
+            to="/notices" 
+            onClick={closeMenu}
+            className={isActive("/notices") ? "active" : ""}
+          >
+            सूचना
+          </Link>
+          <Link 
+            to="/development" 
+            onClick={closeMenu}
+            className={isActive("/development") ? "active" : ""}
+          >
+            विकास कामे
+          </Link>
+          <Link 
+            to="/gallery" 
+            onClick={closeMenu}
+            className={isActive("/gallery") ? "active" : ""}
+          >
+            छायाचित्रे
+          </Link>
+          <Link 
+            to="/contact" 
+            onClick={closeMenu}
+            className={isActive("/contact") ? "active" : ""}
+          >
+            सदस्य
+          </Link>
 
           {/* LOGOUT */}
           {user && (

@@ -34,7 +34,7 @@ const ManageNotices = () => {
     setPopup({ show: true, message, type });
     setTimeout(() => {
       setPopup({ show: false, message: "", type: "" });
-    }, 3000);
+    }, 1500);
   };
 
   /* ================= FETCH ================= */
@@ -232,7 +232,7 @@ const ManageNotices = () => {
             <span>⭐ Mark as Important</span>
           </label>
 
-          <div className="form-group">
+          {/* <div className="form-group">
             <label>Attachment (PDF, JPG, PNG)</label>
             <input
               type="file"
@@ -240,7 +240,7 @@ const ManageNotices = () => {
               onChange={(e) => setFile(e.target.files[0])}
               disabled={isAdding}
             />
-          </div>
+          </div> */}
 
           <button 
             type="submit" 
