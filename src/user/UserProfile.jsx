@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./UserProfile.css";
 
-/* ✅ BACKEND URL */
+/* BACKEND URL */
 const API =
   process.env.REACT_APP_API_URL ||
   "https://backend-9i6n.onrender.com";
@@ -15,6 +15,7 @@ const UserProfile = () => {
 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
 
   /* ================= FETCH PROFILE ================= */
   const fetchProfile = async () => {
@@ -40,8 +41,35 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
+    window.scrollTo(0,0);
     if (token) fetchProfile();
   }, [token]);
+
+  /* ================= CANCEL APPLICATION ================= */
+  const cancelApplication = async (id) => {
+    if (!window.confirm("ही अर्ज रद्द करायची आहे का?")) return;
+
+    try {
+      setDeletingId(id);
+
+      await axios.delete(`${API}/api/services/application/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      fetchProfile(); // refresh list
+    } catch (err) {
+      alert("अर्ज रद्द करता आला नाही ❌");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  /* ================= RE-APPLY ================= */
+  const reApply = (serviceType) => {
+    navigate(`/apply-service?service=${encodeURIComponent(serviceType)}`);
+  };
 
   /* ================= LOADING ================= */
   if (loading) {
@@ -109,7 +137,7 @@ const UserProfile = () => {
                   </p>
                 )}
 
-                {/* ✅ ADMIN MESSAGE FOR BOTH APPROVED & REJECTED */}
+                {/* ADMIN MESSAGE */}
                 {s.adminRemark && (
                   <p
                     className={
@@ -125,6 +153,20 @@ const UserProfile = () => {
                     </b>{" "}
                     {s.adminRemark}
                   </p>
+                )}
+
+                {/* 🔴 ACTIONS ONLY FOR REJECTED */}
+                {s.status === "Rejected" && (
+                  <div className="user-actions">
+                    
+
+                    <button
+                      className="reapply-btn"
+                      onClick={() => reApply(s.serviceType)}
+                    >
+                      🔁 Re-Apply
+                    </button>
+                  </div>
                 )}
               </div>
             );

@@ -39,6 +39,26 @@
     opacity: 0.5;
   }
 }
+.user-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+
+.reapply-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.reapply-btn:hover {
+  background: #0d47a1;
+}
+
 
 /* PROFILE CARD */
 .profile-card {
