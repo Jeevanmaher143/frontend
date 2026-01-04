@@ -54,10 +54,10 @@ const Navbar = () => {
                 मुख्यपृष्ठ
               </Link>
               <Link 
-                to="/about" 
-                className={isActive("/about") ? "active" : ""}
+                to="/notices" 
+                className={isActive("/notices") ? "active" : ""}
               >
-                गावाची माहिती
+                सूचना
               </Link>
               <Link 
                 to="/services" 
@@ -71,12 +71,7 @@ const Navbar = () => {
               >
                 योजना
               </Link>
-              <Link 
-                to="/notices" 
-                className={isActive("/notices") ? "active" : ""}
-              >
-                सूचना
-              </Link>
+              
               <Link 
                 to="/development" 
                 className={isActive("/development") ? "active" : ""}
@@ -88,6 +83,12 @@ const Navbar = () => {
                 className={isActive("/gallery") ? "active" : ""}
               >
                 छायाचित्रे
+              </Link>
+              <Link 
+                to="/about" 
+                className={isActive("/about") ? "active" : ""}
+              >
+                गावाची माहिती
               </Link>
               <Link 
                 to="/contact" 

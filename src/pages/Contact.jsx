@@ -10,6 +10,7 @@ const Contact = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    window.scrollTo(0, 0); 
     const fetchContacts = async () => {
       try {
         if (!API) {

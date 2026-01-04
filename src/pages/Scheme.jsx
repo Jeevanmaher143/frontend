@@ -11,6 +11,7 @@ const Scheme = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    window.scrollTo(0, 0); 
     const fetchSchemes = async () => {
       try {
         const res = await fetch(`${API}/api/schemes`);

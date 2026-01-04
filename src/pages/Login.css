@@ -96,6 +96,44 @@ form {
   cursor: not-allowed;
 }
 
+/* ERROR STYLING */
+.input-group input.input-error {
+  border-color: #e53935;
+  background: #ffebee;
+}
+
+.input-group input.input-error:focus {
+  border-color: #e53935;
+  box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.1);
+}
+
+.error-message {
+  color: #e53935;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-left: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  animation: slideDown 0.3s ease;
+}
+
+.error-message::before {
+  content: "⚠️";
+  font-size: 13px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* SUBMIT BUTTON */
 .submit-btn {
   padding: 10px;
@@ -213,6 +251,10 @@ form {
   .loader-text {
     font-size: 14px;
   }
+
+  .error-message {
+    font-size: 11px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -271,6 +313,10 @@ form {
 
   .auth-footer p {
     font-size: 13px;
+  }
+
+  .error-message {
+    font-size: 11px;
   }
 }
 

@@ -13,6 +13,7 @@ const Development = () => {
 
   /* ================= FETCH PROJECTS ================= */
   useEffect(() => {
+    window.scrollTo(0, 0); 
     const fetchProjects = async () => {
       try {
         const res = await fetch(`${API}/api/development`);

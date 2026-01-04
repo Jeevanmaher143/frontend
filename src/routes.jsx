@@ -34,12 +34,11 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* PUBLIC */}
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Home/>} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/development" element={<Development />} />
       <Route path="/login" element={<Login />} />
-
       <Route path="/notices" element={<Notices />} />
       <Route path="/services" element={<Services />} />
       <Route path="/gallery" element={<Gallery />} />
@@ -92,7 +91,6 @@ const AppRoutes = () => {
         <Route path="development" element={<ManageDevelopment />} />
         <Route path="contact" element={<ManageContacts />} />
         <Route path="about" element={<ManageAbout />} />
-        
       </Route>
     </Routes>
   );

@@ -13,6 +13,7 @@ const Notices = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    window.scrollTo(0, 0); 
     const fetchNotices = async () => {
       try {
         const res = await fetch(`${API}/api/notices`);

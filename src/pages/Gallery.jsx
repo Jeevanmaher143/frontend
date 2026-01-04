@@ -5,6 +5,7 @@ const Gallery = () => {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
+    window.scrollTo(0, 0); 
     fetch(
       `${
         process.env.REACT_APP_API_URL ||
