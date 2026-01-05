@@ -9,7 +9,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const firstName = user?.fullName?.split(" ")[0];
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -105,14 +104,14 @@ const Navbar = () => {
 
               {user && (
                 <button
-                  className="profile-avatar vertical"
+                  className="profile-avatar-vertical"
                   onClick={() => navigate("/profile")}
                 >
                   <img
                     src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
                     alt="प्रोफाइल"
                   />
-                  <span className="profile-name">{firstName}</span>
+                  <span className="profile-name">{user.fullName}</span>
                 </button>
               )}
             </div>
@@ -145,7 +144,12 @@ const Navbar = () => {
                 closeMenu();
               }}
             >
-              स्वागत आहे {firstName}
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                alt="प्रोफाइल"
+                className="mobile-profile-avatar"
+              />
+              <span>स्वागत आहे, {user.fullName}</span>
             </button>
           ) : (
             <Link 
