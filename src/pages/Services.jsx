@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Services.css";
 
 const Services = () => {
+  window.scrollTo(0,0);
   const navigate = useNavigate();
 
   // स्थिर सेवा माहिती (नंतर DB मधून घेता येईल)

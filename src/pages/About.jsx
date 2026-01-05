@@ -9,6 +9,7 @@ const About = () => {
   const [village, setVillage] = useState(null);
 
   useEffect(() => {
+    window.scrollTo(0,0);
     fetch(`${API}/api/village`)
       .then((res) => res.json())
       .then((data) => setVillage(data))
