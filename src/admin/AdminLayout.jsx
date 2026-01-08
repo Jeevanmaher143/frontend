@@ -35,7 +35,7 @@ const AdminLayout = () => {
           <div className="admin-logo">
             <div className="logo-icon">GP</div>
             <div className="logo-text">
-              <h2>ग्राम पंचायत</h2>
+              <h2>रोषणखेडा  ग्रामपंचायत</h2>
               <p>प्रशासन पॅनल</p>
             </div>
           </div>
@@ -43,11 +43,11 @@ const AdminLayout = () => {
 
         <div className="admin-profile">
           <div className="profile-avatar">
-            <span className="g1name">G1</span>
+            <span className="g1name">Hi</span>
           </div>
           <div className="profile-info">
             <h3>मुख्य प्रशासक</h3>
-            <span className="profile-badge">Jeevan Maher</span>
+            <span className="profile-badge">सरपंच  व  ग्रामसेवक</span>
           </div>
         </div>
 

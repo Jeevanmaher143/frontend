@@ -104,7 +104,7 @@ const Scheme = () => {
                   rel="noopener noreferrer"
                   className="apply-btn"
                 >
-                  अर्ज करा
+                  सविस्तर माहिती बघा
                 </a>
               )}
             </div>
