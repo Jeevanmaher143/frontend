@@ -155,6 +155,7 @@ const ApplyService = () => {
       "image/jpeg",
       "image/png",
       "image/jpg",
+      "application/pdf",
       
     ];
 
@@ -289,6 +290,7 @@ const ApplyService = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="apply-service-container">
